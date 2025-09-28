@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'home_screen.dart';
+import './../../home/presentation/home_screen.dart';
 import 'admin_login_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -27,24 +27,28 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:3000/auth/login'),
+        Uri.parse('http://localhost:3000/workers/login'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'email': orgNumber, // or use an emailController
+          'organizationPhone': orgNumber, // or use an emailController
           'password': password,
         }),
       );
+      print('the inputs man: ${orgNumber}');
       print('Raw response: ${response.body}');
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         final data = jsonDecode(response.body);
-
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => HomeScreen()),
+        );
         if (data['success'] == true) {
           // ✅ Credentials correct: go to HomeScreen
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (_) => HomeScreen()),
-          );
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(builder: (_) => HomeScreen()),
+          // );
         } else {
           // ❌ Invalid credentials
           ScaffoldMessenger.of(context).showSnackBar(
@@ -52,11 +56,15 @@ class _LoginScreenState extends State<LoginScreen> {
           );
         }
       } else {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        print('raw response: ${response.body}');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Server error: ${response.statusCode}")),
         );
       }
     } catch (e) {
+      print('Request failed: $e');
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Error: $e")),
       );
@@ -119,7 +127,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       SizedBox(height: 16),
-
                       // Password
                       TextField(
                         controller: passwordController,

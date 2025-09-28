@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import './../../home/presentation/home_screen.dart';
+
+import 'login_screen.dart';
 
 class AdminLoginScreen extends StatefulWidget {
   @override
@@ -9,11 +14,60 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  void handleAdminLogin() {
-    // Later add real login logic
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Admin login pressed')),
-    );
+  void handleAdminLogin() async {
+    final orgNumber = emailController.text.trim();
+    final password = passwordController.text.trim();
+
+    if (orgNumber.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please fill all fields")),
+      );
+      return;
+    }
+
+    try {
+      final response = await http.post(
+        Uri.parse('http://localhost:3000/auth/login'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': orgNumber, // or use an emailController
+          'password': password,
+        }),
+      );
+      print('Raw response: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => HomeScreen()),
+        );
+        if (data['success'] == true) {
+          // ✅ Credentials correct: go to HomeScreen
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(builder: (_) => HomeScreen()),
+          // );
+        } else {
+          // ❌ Invalid credentials
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Invalid credentials")),
+          );
+        }
+      } else {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        print('raw response: ${response.body}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Server error: ${response.statusCode}")),
+        );
+      }
+    } catch (e) {
+      print('Request failed: $e');
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: $e")),
+      );
+    }
   }
 
   @override
@@ -94,6 +148,18 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                           style: TextStyle(fontSize: 18)),
                     ),
                   ),
+                  SizedBox(height: 24),
+
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => LoginScreen()),
+                      );
+                    },
+                    child: Text("Login as an worker",
+                        style: TextStyle(color: Colors.grey[700])),
+                  )
                 ],
               ),
             ),
