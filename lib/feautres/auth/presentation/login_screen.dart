@@ -3,6 +3,7 @@ import './../../home/presentation/home_screen.dart';
 import 'admin_login_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import './../../home/presentation/welcome_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -41,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
         final data = jsonDecode(response.body);
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => HomeScreen()),
+          MaterialPageRoute(builder: (_) => WelcomeScreen()),
         );
         if (data['success'] == true) {
           // ✅ Credentials correct: go to HomeScreen

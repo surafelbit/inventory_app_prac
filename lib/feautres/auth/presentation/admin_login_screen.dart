@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import './../../home/presentation/home_screen.dart';
+import './../../home/presentation/welcome_screen.dart';
 
 import 'login_screen.dart';
 
@@ -40,20 +41,8 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
         final data = jsonDecode(response.body);
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => HomeScreen()),
+          MaterialPageRoute(builder: (_) => WelcomeScreen()),
         );
-        if (data['success'] == true) {
-          // ✅ Credentials correct: go to HomeScreen
-          // Navigator.pushReplacement(
-          //   context,
-          //   MaterialPageRoute(builder: (_) => HomeScreen()),
-          // );
-        } else {
-          // ❌ Invalid credentials
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Invalid credentials")),
-          );
-        }
       } else {
         final Map<String, dynamic> responseData = json.decode(response.body);
         print('raw response: ${response.body}');
