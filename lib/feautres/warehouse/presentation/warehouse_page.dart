@@ -42,15 +42,31 @@ class _WarehousePageState extends State<WarehousePage> {
               mainAxisAlignment: MainAxisAlignment.spaceAround, // optional
 
               children: [
-                Icon(Icons.filter_alt),
+                Row(
+                  children: [Text('filter'), Icon(Icons.filter_alt)],
+                ),
                 SizedBox(
                   width: 10,
                 ),
-                Icon(Icons.shop)
+                Row(
+                  children: [Text('sort'), Icon(Icons.sort)],
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Row(
+                  children: [Text('collection'), Icon(Icons.collections)],
+                ),
               ],
-            )
+            ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {},
+        icon: const Icon(Icons.add),
+        label: const Text("Add Item To Warehouse"),
+        backgroundColor: Colors.blue,
       ),
     );
   }
