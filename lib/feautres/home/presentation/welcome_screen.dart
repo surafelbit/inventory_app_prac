@@ -6,6 +6,7 @@ import 'home_screen.dart';
 // import 'credit_page.dart';
 import 'package:flutter_app/feautres/profile/presentation/profile_screen.dart';
 import 'package:flutter_app/feautres/warehouse/presentation/warehouse_page.dart';
+import 'package:flutter_app/feautres/credit/presentation/credit_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
@@ -21,7 +22,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     HomeScreen(),
     ProfileScreen(),
     WarehousePage(),
-    ShopScreen()
+    ShopScreen(),
+    CreditScreen()
   ];
 
   @override

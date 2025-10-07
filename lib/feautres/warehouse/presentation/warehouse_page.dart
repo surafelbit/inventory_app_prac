@@ -11,7 +11,17 @@ class _WarehousePageState extends State<WarehousePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Warehouse Page'),
+        // title: const Text("My App"),
+        title: SizedBox(
+          width: double.infinity,
+          child: TextField(
+              decoration: InputDecoration(
+                  hintText: 'Search Items',
+                  prefixIcon: Icon(Icons.search),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none))),
+        ),
       ),
     );
   }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/feautres/profile/presentation/profile_screen.dart';
+import 'package:flutter_app/feautres/history/presentation/sales_history_screen.dart';
+import 'package:flutter_app/feautres/history/presentation/general_history_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -132,9 +134,19 @@ class _HomeScreenState extends State<HomeScreen> {
             _buildSectionCard(
               title: 'History',
               children: [
-                _buildRowItem('Sales history', ''),
+                _buildRowItem('Sales history', '', onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SalesHistoryScreen()));
+                }),
                 const Divider(height: 1),
-                _buildRowItem('General history', ''),
+                _buildRowItem('General history', '', onTap: () {
+                  Navigator.push(
+                      (context),
+                      MaterialPageRoute(
+                          builder: (context) => const GeneralHistoryScreen()));
+                }),
               ],
             ),
             const SizedBox(height: 16),
@@ -217,14 +229,14 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildRowItem(String left, String right) {
+  Widget _buildRowItem(String left, String right, {VoidCallback? onTap}) {
     return ListTile(
       title: Text(left),
       trailing: Text(
         right,
         style: TextStyle(color: Colors.red),
       ),
-      onTap: () {},
+      onTap: onTap,
     );
   }
 
