@@ -4,26 +4,27 @@ import '../../models/user_model.dart';
 
 class ApiService {
   static const String baseUrl =
-      'https://yourapi.com'; // Replace with your backend URL
+      'http://localhost:3000'; // Replace with your backend URL
 
   /// Login API
   /// Returns a map: { 'token': String, 'user': UserModel }
   static Future<Map<String, dynamic>> login(
-      String email, String password) async {
-    final url = Uri.parse('$baseUrl/login');
+      String organizationPhone, String password) async {
+    final url = Uri.parse('$baseUrl/workers/login');
 
     try {
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': email, 'password': password}),
+        body: jsonEncode(
+            {'organizationPhone': organizationPhone, 'password': password}),
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         final data = jsonDecode(response.body);
-
-        final token = data['token'] as String;
-        final userJson = data['user'] as Map<String, dynamic>;
+        print(response.body);
+        final token = data['access_token'] as String;
+        final userJson = data['worker'] as Map<String, dynamic>;
         final user = UserModel.fromJson(userJson);
 
         return {'token': token, 'user': user};
