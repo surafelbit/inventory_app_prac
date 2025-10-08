@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'feautres/auth/presentation/login_screen.dart';
+import 'feautres/home/presentation/welcome_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -13,7 +14,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: LoginScreen(), // start with login screen
+      // home: LoginScreen(), // start with login screen
+      home: WelcomeScreen(),
     );
   }
 }
