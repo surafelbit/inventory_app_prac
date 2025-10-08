@@ -20,10 +20,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   final List<Widget> _pages = const [
     HomeScreen(),
-    ProfileScreen(),
     WarehousePage(),
     ShopScreen(),
-    CreditScreen()
+    CreditScreen(),
+    ProfileScreen(),
   ];
 
   @override
@@ -42,12 +42,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
           BottomNavigationBarItem(
               icon: Icon(Icons.warehouse), label: 'Warehouse'),
           BottomNavigationBarItem(icon: Icon(Icons.shop), label: 'Shop'),
           BottomNavigationBarItem(
               icon: Icon(Icons.credit_card), label: 'Credit'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
     );
