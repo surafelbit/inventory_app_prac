@@ -1,11 +1,11 @@
 import '../../models/user_model.dart';
 
 class AuthState {
-  final bool isLoading; // true when logging in
-  final bool isLoggedIn; // true if user is logged in
-  final String? token; // auth token from backend
-  final UserModel? user; // logged-in user object
-  final String? error; // error message if login fails
+  final bool isLoading;
+  final bool isLoggedIn;
+  final String? token;
+  final UserModel? user;
+  final String? error;
 
   AuthState({
     required this.isLoading,
@@ -15,7 +15,6 @@ class AuthState {
     this.error,
   });
 
-  // Initial state before login
   factory AuthState.initial() {
     return AuthState(
       isLoading: false,
@@ -26,7 +25,6 @@ class AuthState {
     );
   }
 
-  // Create a copy with updated fields (used in notifier)
   AuthState copyWith({
     bool? isLoading,
     bool? isLoggedIn,
@@ -39,7 +37,7 @@ class AuthState {
       isLoggedIn: isLoggedIn ?? this.isLoggedIn,
       token: token ?? this.token,
       user: user ?? this.user,
-      error: error ?? this.error,
+      error: error,
     );
   }
 }

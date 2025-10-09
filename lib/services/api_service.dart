@@ -23,11 +23,11 @@ class ApiService {
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = jsonDecode(response.body);
         print(response.body);
-        final token = data['access_token'] as String;
-        final userJson = data['worker'] as Map<String, dynamic>;
-        final user = UserModel.fromJson(userJson);
-
-        return {'token': token, 'user': user};
+        if (data['access_token'] != null && data['worker'] != null) {
+          return data;
+        } else {
+          throw Exception('Invalid login response');
+        }
       } else {
         throw Exception('Login failed with status code ${response.statusCode}');
       }

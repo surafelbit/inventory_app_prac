@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../models/user_model.dart';
 import '../../services/api_service.dart';
 import 'auth_state.dart';
@@ -6,15 +7,18 @@ import 'auth_state.dart';
 class AuthNotifier extends StateNotifier<AuthState> {
   AuthNotifier() : super(AuthState.initial());
 
-  // Login function
-  Future<void> login(String email, String password) async {
+  Future<void> login(String phone, String password) async {
     try {
       state = state.copyWith(isLoading: true);
 
-      final result = await ApiService.login(email, password);
+      final result = await ApiService.login(phone, password);
+      final token = result['access_token'] as String;
+      final user = UserModel.fromJson(result['worker']);
 
-      final token = result['token'] as String;
-      final user = result['user'] as UserModel;
+      // Save to SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', token);
+      await prefs.setString('user', user.toJsonString());
 
       state = state.copyWith(
         isLoading: false,
@@ -24,15 +28,30 @@ class AuthNotifier extends StateNotifier<AuthState> {
         error: null,
       );
     } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        error: e.toString(),
-      );
+      state = state.copyWith(isLoading: false, error: e.toString());
     }
   }
 
-  // Logout function
-  void logout() {
+  Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('token');
+    await prefs.remove('user');
+
     state = AuthState.initial();
+  }
+
+  Future<void> loadUserFromPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final userStr = prefs.getString('user');
+
+    if (token != null && userStr != null) {
+      final user = UserModel.fromJsonString(userStr);
+      state = state.copyWith(
+        isLoggedIn: true,
+        token: token,
+        user: user,
+      );
+    }
   }
 }

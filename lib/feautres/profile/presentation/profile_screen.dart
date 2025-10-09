@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/state/auth/auth_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../state/auth/auth_provider.dart';
 
@@ -13,7 +14,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     // final authState = ref.watch(authProvider);
-
+    final authState = ref.read(authProvider);
+    print('this is the user ');
+    print(authState.user?.name);
+    print('this is the user ');
+    final userName = authState.user?.name ?? 'Guest'; // fallback if null
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
@@ -45,8 +50,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           Container(
                             child: Column(
                               children: [
-                                const Text(
-                                  'Abebe Yene',
+                                Text(
+                                  userName,
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 22,
