@@ -20,13 +20,16 @@ class AdminModel {
       required this.organization});
   factory AdminModel.fromJson(Map<String, dynamic> json) {
     return AdminModel(
-        id: json['id'],
-        firstName: json['firstName'],
-        lastName: json['lastName'],
-        phone: json['phone'],
-        userType: json['userType'],
-        role: json['role'],
-        organization: json['organization']);
+      id: json['id'],
+      firstName: json['firstName'] ?? "",
+      lastName: json['lastName'] ?? "",
+      phone: json['phone'] ?? "",
+      userType: json['userType'] ?? "",
+      role: json['role'] ?? "",
+      organization: json['organization'] != null
+          ? OrganizationModel.fromJson(json['organization'])
+          : null,
+    );
   }
   Map<String, dynamic> toJson() {
     return {

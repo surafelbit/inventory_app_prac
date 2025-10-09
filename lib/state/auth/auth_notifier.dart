@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../models/user_model.dart';
+import '../../models/admin_model.dart';
 import '../../services/api_service.dart';
 import 'auth_state.dart';
 
@@ -25,6 +26,27 @@ class AuthNotifier extends StateNotifier<AuthState> {
         isLoggedIn: true,
         token: token,
         user: user,
+        error: null,
+      );
+    } catch (e) {
+      state = state.copyWith(isLoading: false, error: e.toString());
+    }
+  }
+
+  Future<void> loginAdmin(String email, String password) async {
+    try {
+      state = state.copyWith(isLoading: true);
+      final result = await ApiService.loginAdmin(email, password);
+      final token = result['access_token'] as String;
+      final admin = AdminModel.fromJson(result['user']);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', token);
+      await prefs.setString('user', admin.toJsonString());
+      state = state.copyWith(
+        isLoading: false,
+        isLoggedIn: true,
+        token: token,
+        admin: admin,
         error: null,
       );
     } catch (e) {

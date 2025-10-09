@@ -36,6 +36,32 @@ class ApiService {
     }
   }
 
+  static Future<Map<String, dynamic>> loginAdmin(
+      String email, String password) async {
+    final url = Uri.parse('$baseUrl/auth/login');
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({'email': email, 'password': password}),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+        if (data['access_token'] != null && data['user'] != null) {
+          return data;
+        } else {
+          throw Exception('Invalid login response');
+        }
+      } else {
+        throw Exception('Login failed with status code ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Login error: $e');
+    }
+  }
+
   /// Example: Future extension for other APIs
   /*
   static Future<UserModel> getProfile(String token) async {

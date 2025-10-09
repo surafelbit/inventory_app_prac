@@ -1,10 +1,12 @@
 import '../../models/user_model.dart';
+import '../../models/admin_model.dart';
 
 class AuthState {
   final bool isLoading;
   final bool isLoggedIn;
   final String? token;
   final UserModel? user;
+  final AdminModel? admin;
   final String? error;
 
   AuthState({
@@ -12,6 +14,7 @@ class AuthState {
     required this.isLoggedIn,
     this.token,
     this.user,
+    this.admin,
     this.error,
   });
 
@@ -21,6 +24,7 @@ class AuthState {
       isLoggedIn: false,
       token: null,
       user: null,
+      admin: null,
       error: null,
     );
   }
@@ -30,6 +34,7 @@ class AuthState {
     bool? isLoggedIn,
     String? token,
     UserModel? user,
+    AdminModel? admin,
     String? error,
   }) {
     return AuthState(
@@ -37,6 +42,7 @@ class AuthState {
       isLoggedIn: isLoggedIn ?? this.isLoggedIn,
       token: token ?? this.token,
       user: user ?? this.user,
+      admin: admin ?? this.admin,
       error: error,
     );
   }

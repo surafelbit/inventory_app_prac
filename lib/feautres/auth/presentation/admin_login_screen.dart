@@ -1,25 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/state/auth/auth_notifier.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import './../../home/presentation/home_screen.dart';
 import './../../home/presentation/welcome_screen.dart';
-
+import '../../../state/auth/auth_provider.dart';
 import 'login_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AdminLoginScreen extends StatefulWidget {
+class AdminLoginScreen extends ConsumerStatefulWidget {
   @override
   _AdminLoginScreenState createState() => _AdminLoginScreenState();
 }
 
-class _AdminLoginScreenState extends State<AdminLoginScreen> {
+class _AdminLoginScreenState extends ConsumerState<AdminLoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   void handleAdminLogin() async {
-    final orgNumber = emailController.text.trim();
+    final email = emailController.text.trim();
     final password = passwordController.text.trim();
 
-    if (orgNumber.isEmpty || password.isEmpty) {
+    if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Please fill all fields")),
       );
@@ -27,27 +29,33 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
     }
 
     try {
-      final response = await http.post(
-        Uri.parse('http://localhost:3000/auth/login'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'email': orgNumber, // or use an emailController
-          'password': password,
-        }),
-      );
-      print('Raw response: ${response.body}');
+      await ref.read(authProvider.notifier).loginAdmin(email, password);
+      final state = await ref.read(authProvider);
+      if (state.isLoggedIn) {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (_) => const WelcomeScreen()));
+      } else if (state.error != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(state.error!)),
+        );
+      }
+      // final response = await http.post(
+      //   Uri.parse('http://localhost:3000/auth/login'),
+      //   headers: {'Content-Type': 'application/json'},
+      //   body: jsonEncode({
+      //     'email': email, // or use an emailController
+      //     'password': password,
+      //   }),
+      // );
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final data = jsonDecode(response.body);
+      if (state.isLoggedIn) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => WelcomeScreen()),
         );
       } else {
-        final Map<String, dynamic> responseData = json.decode(response.body);
-        print('raw response: ${response.body}');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Server error: ${response.statusCode}")),
+          SnackBar(content: Text("Server error: error")),
         );
       }
     } catch (e) {
@@ -68,6 +76,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authState = ref.watch(authProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text('Admin Login'),
@@ -121,22 +130,23 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                     ),
                   ),
                   SizedBox(height: 24),
-
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blueAccent,
-                        padding: EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                  authState.isLoading
+                      ? const CircularProgressIndicator()
+                      : SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blueAccent,
+                              padding: EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            onPressed: handleAdminLogin,
+                            child: Text("Login as Admin",
+                                style: TextStyle(fontSize: 18)),
+                          ),
                         ),
-                      ),
-                      onPressed: handleAdminLogin,
-                      child: Text("Login as Admin",
-                          style: TextStyle(fontSize: 18)),
-                    ),
-                  ),
                   SizedBox(height: 24),
 
                   TextButton(
