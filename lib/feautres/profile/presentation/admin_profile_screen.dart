@@ -234,20 +234,78 @@ class _AdminProfileScreenState extends ConsumerState<AdminProfileScreen> {
                                                             mainAxisAlignment:
                                                                 MainAxisAlignment
                                                                     .spaceEvenly,
+                                                            // children: [
+                                                            //   _buildSelectableButton(
+                                                            //       'all',
+                                                            //       selected,
+                                                            //       setModalState),
+                                                            //   _buildSelectableButton(
+                                                            //       'warehouse',
+                                                            //       selected,
+                                                            //       setModalState),
+                                                            //   _buildSelectableButton(
+                                                            //       'shop',
+                                                            //       selected,
+                                                            //       setModalState),
+                                                            // ],
+                                                            // children: ['all','warehouse','shop'].map((item){
+
+                                                            // }),
                                                             children: [
-                                                              _buildSelectableButton(
-                                                                  'all',
-                                                                  selected,
-                                                                  setModalState),
-                                                              _buildSelectableButton(
-                                                                  'warehouse',
-                                                                  selected,
-                                                                  setModalState),
-                                                              _buildSelectableButton(
-                                                                  'shop',
-                                                                  selected,
-                                                                  setModalState),
-                                                            ],
+                                                              'all',
+                                                              'warehouse',
+                                                              'shop'
+                                                            ].map((item) {
+                                                              final bool
+                                                                  isSelected =
+                                                                  selected ==
+                                                                      item;
+                                                              return GestureDetector(
+                                                                onTap: () {
+                                                                  setState(() {
+                                                                    selected =
+                                                                        item;
+                                                                  });
+                                                                },
+                                                                child:
+                                                                    Container(
+                                                                  margin: EdgeInsets
+                                                                      .symmetric(
+                                                                          horizontal:
+                                                                              6),
+                                                                  padding: EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                          20,
+                                                                      vertical:
+                                                                          10),
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    color: isSelected
+                                                                        ? Colors
+                                                                            .blue
+                                                                        : Colors
+                                                                            .grey,
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .circular(8),
+                                                                  ),
+                                                                  child: Text(
+                                                                    item,
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: isSelected
+                                                                          ? Colors
+                                                                              .white
+                                                                          : Colors
+                                                                              .black,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            }).toList(),
                                                           ),
 
                                                           const SizedBox(
