@@ -229,7 +229,7 @@ class _AdminProfileScreenState extends ConsumerState<AdminProfileScreen> {
                                                           const SizedBox(
                                                               height: 20),
 
-                                                          // ✅ Selectable buttonss
+                                                          // ✅ Selectable buttons
                                                           Row(
                                                             mainAxisAlignment:
                                                                 MainAxisAlignment
