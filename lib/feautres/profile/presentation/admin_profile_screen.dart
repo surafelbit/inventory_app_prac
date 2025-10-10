@@ -137,6 +137,155 @@ class _AdminProfileScreenState extends ConsumerState<AdminProfileScreen> {
                     }),
                     _buildProfileOption(Icons.collections, 'My Collections',
                         () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled:
+                            true, // 🔥 allows full height if needed
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(20)),
+                        ),
+                        builder: (context) {
+                          return Padding(
+                            padding: EdgeInsets.only(
+                              bottom:
+                                  MediaQuery.of(context).viewInsets.bottom + 10,
+                              left: 20,
+                              right: 20,
+                              top: 15,
+                            ),
+                            child: SingleChildScrollView(
+                              // ✅ makes it scrollable if tall
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    'Add New Branch',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(height: 20),
+
+                                  // ✅ Grid-style layout
+                                  Wrap(
+                                    spacing:
+                                        20, // horizontal space between boxes
+                                    runSpacing:
+                                        15, // vertical space between rows
+                                    alignment: WrapAlignment.center,
+                                    children: [
+                                      _buildBox(
+                                          'Add Branch', Icons.account_tree, () {
+                                        showModalBottomSheet(
+                                          context: context,
+                                          isScrollControlled: true,
+                                          backgroundColor: Colors.white,
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.vertical(
+                                                top: Radius.circular(20)),
+                                          ),
+                                          builder: (context) {
+                                            String selected =
+                                                'all'; // local state
+
+                                            // 👇 Use StatefulBuilder to manage state inside this modal
+                                            return StatefulBuilder(
+                                              builder:
+                                                  (context, setModalState) {
+                                                return Padding(
+                                                  padding: EdgeInsets.only(
+                                                    bottom:
+                                                        MediaQuery.of(context)
+                                                            .viewInsets
+                                                            .bottom,
+                                                    left: 20,
+                                                    right: 20,
+                                                    top: 20,
+                                                  ),
+                                                  child: Container(
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.8,
+                                                    width: double.infinity,
+                                                    child:
+                                                        SingleChildScrollView(
+                                                      child: Column(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          const Text(
+                                                            'Select Branch Type',
+                                                            style: TextStyle(
+                                                              fontSize: 18,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 20),
+
+                                                          // ✅ Selectable buttons
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceEvenly,
+                                                            children: [
+                                                              _buildSelectableButton(
+                                                                  'all',
+                                                                  selected,
+                                                                  setModalState),
+                                                              _buildSelectableButton(
+                                                                  'warehouse',
+                                                                  selected,
+                                                                  setModalState),
+                                                              _buildSelectableButton(
+                                                                  'shop',
+                                                                  selected,
+                                                                  setModalState),
+                                                            ],
+                                                          ),
+
+                                                          const SizedBox(
+                                                              height: 30),
+                                                          const Text(
+                                                              'something'),
+                                                          const SizedBox(
+                                                              height: 20),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            );
+                                          },
+                                        );
+                                      }),
+                                      _buildBox(
+                                          'Add Supplier', Icons.people, () {}),
+                                      _buildBox(
+                                          'Add Group', Icons.group_work, () {}),
+                                      _buildBox('Add Mark', Icons.check_circle,
+                                          () {}),
+                                      _buildBox('Add Measur', Icons.straighten,
+                                          () {}),
+                                      _buildBox('Add Brand', Icons.shopping_bag,
+                                          () {}),
+                                    ],
+                                  ),
+                                  SizedBox(height: 20),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+
                       // Navigate to settings page
                     }),
                     _buildProfileOption(Icons.credit_card, 'My Credits', () {
@@ -169,6 +318,60 @@ class _AdminProfileScreenState extends ConsumerState<AdminProfileScreen> {
         title: Text(title),
         trailing: const Icon(Icons.arrow_forward_ios, size: 16),
         onTap: onTap,
+      ),
+    );
+  }
+
+  Widget _buildBox(String title, IconData icon, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap, // 👈 handles the tap
+      borderRadius: BorderRadius.circular(10),
+      child: Container(
+        width: 150,
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        decoration: BoxDecoration(
+          color: Colors.grey[300],
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 30, color: Colors.black54),
+            SizedBox(height: 6),
+            Text(title),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSelectableButton(
+      String label, String selected, void Function(void Function()) setState) {
+    final bool isSelected = selected == label;
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selected = label;
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.blue : Colors.grey[200],
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: isSelected ? Colors.blue : Colors.grey,
+            width: 1,
+          ),
+        ),
+        child: Text(
+          label.toUpperCase(),
+          style: TextStyle(
+            color: isSelected ? Colors.white : Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }
