@@ -190,7 +190,6 @@ class _AdminProfileScreenState extends ConsumerState<AdminProfileScreen> {
                                             String selected =
                                                 'all'; // local state
 
-                                            // 👇 Use StatefulBuilder to manage state inside this modal
                                             return StatefulBuilder(
                                               builder:
                                                   (context, setModalState) {
@@ -234,23 +233,6 @@ class _AdminProfileScreenState extends ConsumerState<AdminProfileScreen> {
                                                             mainAxisAlignment:
                                                                 MainAxisAlignment
                                                                     .spaceEvenly,
-                                                            // children: [
-                                                            //   _buildSelectableButton(
-                                                            //       'all',
-                                                            //       selected,
-                                                            //       setModalState),
-                                                            //   _buildSelectableButton(
-                                                            //       'warehouse',
-                                                            //       selected,
-                                                            //       setModalState),
-                                                            //   _buildSelectableButton(
-                                                            //       'shop',
-                                                            //       selected,
-                                                            //       setModalState),
-                                                            // ],
-                                                            // children: ['all','warehouse','shop'].map((item){
-
-                                                            // }),
                                                             children: [
                                                               'all',
                                                               'warehouse',
@@ -260,31 +242,37 @@ class _AdminProfileScreenState extends ConsumerState<AdminProfileScreen> {
                                                                   isSelected =
                                                                   selected ==
                                                                       item;
+
                                                               return GestureDetector(
                                                                 onTap: () {
-                                                                  setState(() {
+                                                                  // 👇 FIXED: use setModalState instead of setState
+                                                                  setModalState(
+                                                                      () {
                                                                     selected =
                                                                         item;
                                                                   });
                                                                 },
                                                                 child:
                                                                     Container(
-                                                                  margin: EdgeInsets
+                                                                  margin: const EdgeInsets
                                                                       .symmetric(
-                                                                          horizontal:
-                                                                              6),
-                                                                  padding: EdgeInsets.symmetric(
                                                                       horizontal:
-                                                                          20,
-                                                                      vertical:
-                                                                          10),
+                                                                          6),
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .symmetric(
+                                                                    horizontal:
+                                                                        20,
+                                                                    vertical:
+                                                                        10,
+                                                                  ),
                                                                   decoration:
                                                                       BoxDecoration(
                                                                     color: isSelected
                                                                         ? Colors
                                                                             .blue
                                                                         : Colors
-                                                                            .grey,
+                                                                            .grey[300],
                                                                     borderRadius:
                                                                         BorderRadius
                                                                             .circular(8),
@@ -307,11 +295,29 @@ class _AdminProfileScreenState extends ConsumerState<AdminProfileScreen> {
                                                               );
                                                             }).toList(),
                                                           ),
+                                                          Row(
+                                                            children: [
+                                                              const TextField(
+                                                                decoration:
+                                                                    InputDecoration(
+                                                                  hintText:
+                                                                      'Add Branch Name',
+                                                                  border:
+                                                                      OutlineInputBorder(),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
 
+                                                          ElevatedButton(
+                                                              onPressed: () {},
+                                                              // decoration:BoxDecoration(color:Colors.purple),
+                                                              child: Text(
+                                                                  'Add New Branch ${selected}')),
                                                           const SizedBox(
                                                               height: 30),
-                                                          const Text(
-                                                              'something'),
+                                                          Text(
+                                                              'Selected: $selected'),
                                                           const SizedBox(
                                                               height: 20),
                                                         ],
