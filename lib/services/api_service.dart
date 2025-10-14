@@ -76,7 +76,7 @@ class ApiService {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token', // 🔒 send JWT to backend
         },
-        body: jsonEncode({'name': name, 'address': address, 'HouseType': type}),
+        body: jsonEncode({'name': name, 'address': address, 'houseType': type}),
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
         print(response);
@@ -88,6 +88,24 @@ class ApiService {
       print(error);
       throw Exception(
           'Error creating branch: $error'); // <-- ensures a return or throw
+    }
+  }
+
+  static Future<List<dynamic>> fetchBranch() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final url = Uri.parse('$baseUrl/branches');
+      final token = prefs.getString('token');
+      final response =
+          await http.get(url, headers: {'Authorization': 'Bearer $token'});
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // ✅ jsonDecode returns a List<dynamic>
+        return jsonDecode(response.body);
+      } else {
+        throw Exception('Failed to fetch branch');
+      }
+    } catch (error) {
+      throw Exception('Error fetching branch: $error');
     }
   }
 
