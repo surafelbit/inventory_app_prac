@@ -33,6 +33,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
+  Future<void> addBranch(String name, String address, String branchType) async {
+    try {} catch (error) {}
+  }
+
   Future<void> loginAdmin(String email, String password) async {
     try {
       state = state.copyWith(isLoading: true);

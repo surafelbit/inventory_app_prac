@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../state/auth/auth_provider.dart';
 
 class AdminProfileScreen extends ConsumerStatefulWidget {
-  const AdminProfileScreen({Key? Key}) : super(key: Key);
+  const AdminProfileScreen({Key? key}) : super(key: key);
   @override
   _AdminProfileScreenState createState() => _AdminProfileScreenState();
 }
@@ -12,7 +11,6 @@ class AdminProfileScreen extends ConsumerStatefulWidget {
 class _AdminProfileScreenState extends ConsumerState<AdminProfileScreen> {
   @override
   Widget build(BuildContext context) {
-    // final authState = ref.watch(authProvider);
     final authState = ref.read(authProvider);
     print('this is the user ');
     print(authState.user?.name);
@@ -33,334 +31,212 @@ class _AdminProfileScreenState extends ConsumerState<AdminProfileScreen> {
               width: double.infinity,
               padding: const EdgeInsets.all(20),
               color: Colors.blue[600],
-              child: Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      child: Row(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      const CircleAvatar(
+                        radius: 50,
+                        backgroundImage:
+                            NetworkImage('https://i.pravatar.cc/150?img=3'),
+                      ),
+                      const SizedBox(width: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const CircleAvatar(
-                            radius: 50,
-                            backgroundImage: NetworkImage(
-                                'https://i.pravatar.cc/150?img=3'), // placeholder image
-                          ),
-                          const SizedBox(width: 10),
-                          Container(
-                            child: Column(
-                              children: [
-                                Text(
-                                  userName,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(width: 5),
-                                const Text(
-                                  'abebe@example.com',
-                                  style: TextStyle(color: Colors.white70),
-                                ),
-                              ],
+                          Text(
+                            userName,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
                             ),
+                          ),
+                          const SizedBox(height: 5),
+                          const Text(
+                            'abebe@example.com',
+                            style: TextStyle(color: Colors.white70),
                           ),
                         ],
                       ),
-                    ),
-                    Container(
-                      child: Row(
-                        children: [
-                          Container(
-                            child: Column(
-                              children: [
-                                const SizedBox(width: 5),
-                                Icon(
-                                  Icons.military_tech,
-                                  color: Colors.purple,
-                                )
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Icon(Icons.military_tech, color: Colors.purple),
+                    ],
+                  ),
+                ],
               ),
             ),
             Container(
-              padding: EdgeInsets.only(left: 20, right: 20, bottom: 200),
-              child: Container(
-                width: 1000,
-                // height: 100,
-                // color: Colors.green,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Container(
-                      // color: Colors.white,
-                      padding: EdgeInsets.all(30),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Container(
-                            child: Column(
-                              children: [
-                                Icon(Icons.edit),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Text("Edit Company Profile"),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Container(
-                            child: Column(
-                              children: [
-                                Icon(Icons.settings),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Text("General Settings"),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    _buildProfileOption(Icons.person, 'My Customers', () {}),
-                    _buildProfileOption(Icons.credit_card, 'Expenses', () {
-                      // Navigate to edit profile page
-                    }),
-                    _buildProfileOption(Icons.collections, 'My Collections',
-                        () {
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled:
-                            true, // 🔥 allows full height if needed
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.vertical(top: Radius.circular(20)),
+              padding: EdgeInsets.only(left: 20, right: 20, bottom: 20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(30),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Column(
+                          children: [
+                            Icon(Icons.edit),
+                            SizedBox(height: 10),
+                            Text("Edit Company Profile"),
+                          ],
                         ),
-                        builder: (context) {
-                          return Padding(
-                            padding: EdgeInsets.only(
-                              bottom:
-                                  MediaQuery.of(context).viewInsets.bottom + 10,
-                              left: 20,
-                              right: 20,
-                              top: 15,
-                            ),
-                            child: SingleChildScrollView(
-                              // ✅ makes it scrollable if tall
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    'Add New Branch',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(height: 20),
+                        SizedBox(width: 10),
+                        Column(
+                          children: [
+                            Icon(Icons.settings),
+                            SizedBox(height: 10),
+                            Text("General Settings"),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  _buildProfileOption(Icons.person, 'My Customers', () {}),
+                  _buildProfileOption(Icons.credit_card, 'Expenses', () {}),
+                  _buildProfileOption(Icons.collections, 'My Collections', () {
+                    // Dummy data for branches
+                    final List<Map<String, dynamic>> dummyBranches = [
+                      {
+                        'id': 1,
+                        'name': 'Downtown Shop',
+                        'type': 'Shop',
+                        'address': '123 Main St, Downtown',
+                        'status': 'Active',
+                      },
+                      {
+                        'id': 2,
+                        'name': 'Central Warehouse',
+                        'type': 'Warehouse',
+                        'address': '456 Industrial Ave, Central',
+                        'status': 'Active',
+                      },
+                      {
+                        'id': 3,
+                        'name': 'Eastside Retail',
+                        'type': 'Shop',
+                        'address': '789 Oak St, Eastside',
+                        'status': 'Active',
+                      },
+                      {
+                        'id': 4,
+                        'name': 'North Storage',
+                        'type': 'Warehouse',
+                        'address': '321 Pine Rd, North District',
+                        'status': 'Active',
+                      },
+                      {
+                        'id': 5,
+                        'name': 'West Mall',
+                        'type': 'Shop',
+                        'address': '654 Elm St, West Mall',
+                        'status': 'Inactive',
+                      },
+                    ];
 
-                                  // ✅ Grid-style layout
-                                  Wrap(
-                                    spacing:
-                                        20, // horizontal space between boxes
-                                    runSpacing:
-                                        15, // vertical space between rows
-                                    alignment: WrapAlignment.center,
-                                    children: [
-                                      _buildBox(
-                                          'Add Branch', Icons.account_tree, () {
-                                        showModalBottomSheet(
-                                          context: context,
-                                          isScrollControlled: true,
-                                          backgroundColor: Colors.white,
-                                          shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.vertical(
-                                                top: Radius.circular(20)),
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.white,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(20)),
+                      ),
+                      builder: (BuildContext modalContext) {
+                        return DefaultTabController(
+                          length: 3,
+                          child: StatefulBuilder(
+                            builder: (BuildContext context,
+                                StateSetter setModalState) {
+                              return Padding(
+                                padding: EdgeInsets.only(
+                                  bottom: MediaQuery.of(modalContext)
+                                          .viewInsets
+                                          .bottom +
+                                      10,
+                                  left: 20,
+                                  right: 20,
+                                  top: 15,
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Text(
+                                      'Manage Branches',
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    TabBar(
+                                      labelColor: Colors.blue[600],
+                                      unselectedLabelColor: Colors.grey,
+                                      indicatorColor: Colors.blue[600],
+                                      tabs: const [
+                                        Tab(text: 'All'),
+                                        Tab(text: 'Shop'),
+                                        Tab(text: 'Warehouse'),
+                                      ],
+                                    ),
+                                    Container(
+                                      constraints:
+                                          const BoxConstraints(maxHeight: 300),
+                                      child: TabBarView(
+                                        children: [
+                                          // All Tab
+                                          _buildBranchList(
+                                            dummyBranches,
+                                            setModalState,
+                                            modalContext,
                                           ),
-                                          builder: (context) {
-                                            String selected =
-                                                'all'; // local state
-
-                                            return StatefulBuilder(
-                                              builder:
-                                                  (context, setModalState) {
-                                                return Padding(
-                                                  padding: EdgeInsets.only(
-                                                    bottom:
-                                                        MediaQuery.of(context)
-                                                            .viewInsets
-                                                            .bottom,
-                                                    left: 20,
-                                                    right: 20,
-                                                    top: 20,
-                                                  ),
-                                                  child: Container(
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .height *
-                                                            0.8,
-                                                    width: double.infinity,
-                                                    child:
-                                                        SingleChildScrollView(
-                                                      child: Column(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        children: [
-                                                          const Text(
-                                                            'Select Branch Type',
-                                                            style: TextStyle(
-                                                              fontSize: 18,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
-                                                          ),
-                                                          const SizedBox(
-                                                              height: 20),
-
-                                                          // ✅ Selectable buttons
-                                                          Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceEvenly,
-                                                            children: [
-                                                              'all',
-                                                              'warehouse',
-                                                              'shop'
-                                                            ].map((item) {
-                                                              final bool
-                                                                  isSelected =
-                                                                  selected ==
-                                                                      item;
-
-                                                              return GestureDetector(
-                                                                onTap: () {
-                                                                  // 👇 FIXED: use setModalState instead of setState
-                                                                  setModalState(
-                                                                      () {
-                                                                    selected =
-                                                                        item;
-                                                                  });
-                                                                },
-                                                                child:
-                                                                    Container(
-                                                                  margin: const EdgeInsets
-                                                                      .symmetric(
-                                                                      horizontal:
-                                                                          6),
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                          .symmetric(
-                                                                    horizontal:
-                                                                        20,
-                                                                    vertical:
-                                                                        10,
-                                                                  ),
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    color: isSelected
-                                                                        ? Colors
-                                                                            .blue
-                                                                        : Colors
-                                                                            .grey[300],
-                                                                    borderRadius:
-                                                                        BorderRadius
-                                                                            .circular(8),
-                                                                  ),
-                                                                  child: Text(
-                                                                    item,
-                                                                    style:
-                                                                        TextStyle(
-                                                                      color: isSelected
-                                                                          ? Colors
-                                                                              .white
-                                                                          : Colors
-                                                                              .black,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              );
-                                                            }).toList(),
-                                                          ),
-                                                          Row(
-                                                            children: [
-                                                              const TextField(
-                                                                decoration:
-                                                                    InputDecoration(
-                                                                  hintText:
-                                                                      'Add Branch Name',
-                                                                  border:
-                                                                      OutlineInputBorder(),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-
-                                                          ElevatedButton(
-                                                              onPressed: () {},
-                                                              // decoration:BoxDecoration(color:Colors.purple),
-                                                              child: Text(
-                                                                  'Add New Branch ${selected}')),
-                                                          const SizedBox(
-                                                              height: 30),
-                                                          Text(
-                                                              'Selected: $selected'),
-                                                          const SizedBox(
-                                                              height: 20),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                            );
-                                          },
-                                        );
-                                      }),
-                                      _buildBox(
-                                          'Add Supplier', Icons.people, () {}),
-                                      _buildBox(
-                                          'Add Group', Icons.group_work, () {}),
-                                      _buildBox('Add Mark', Icons.check_circle,
-                                          () {}),
-                                      _buildBox('Add Measur', Icons.straighten,
-                                          () {}),
-                                      _buildBox('Add Brand', Icons.shopping_bag,
-                                          () {}),
-                                    ],
-                                  ),
-                                  SizedBox(height: 20),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      );
-
-                      // Navigate to settings page
-                    }),
-                    _buildProfileOption(Icons.credit_card, 'My Credits', () {
-                      // Navigate to activity page
-                    }),
-                    _buildProfileOption(Icons.person_2, 'Manage Users', () {
-                      // Handle logout
-                    }),
-                    _buildProfileOption(Icons.build, 'Bulk Import', () {})
-                  ],
-                ),
+                                          // Shop Tab
+                                          _buildBranchList(
+                                            dummyBranches
+                                                .where(
+                                                    (b) => b['type'] == 'Shop')
+                                                .toList(),
+                                            setModalState,
+                                            modalContext,
+                                          ),
+                                          // Warehouse Tab
+                                          _buildBranchList(
+                                            dummyBranches
+                                                .where((b) =>
+                                                    b['type'] == 'Warehouse')
+                                                .toList(),
+                                            setModalState,
+                                            modalContext,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    _buildBox(
+                                        'Add New Branch', Icons.add_business,
+                                        () {
+                                      _showAddBranchModal(modalContext,
+                                          dummyBranches, setModalState);
+                                    }),
+                                    const SizedBox(height: 20),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                    );
+                  }),
+                  _buildProfileOption(Icons.credit_card, 'My Credits', () {}),
+                  _buildProfileOption(Icons.person_2, 'Manage Users', () {}),
+                  _buildProfileOption(Icons.build, 'Bulk Import', () {}),
+                ],
               ),
             ),
           ],
@@ -371,6 +247,281 @@ class _AdminProfileScreenState extends ConsumerState<AdminProfileScreen> {
         icon: Icon(Icons.logout),
         label: Text("Logout"),
       ),
+    );
+  }
+
+  Widget _buildBranchList(List<Map<String, dynamic>> branches,
+      StateSetter setModalState, BuildContext modalContext) {
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: branches.length,
+      itemBuilder: (context, index) {
+        final branch = branches[index];
+        return Card(
+          margin: const EdgeInsets.symmetric(vertical: 4),
+          child: ListTile(
+            leading: Icon(
+              branch['type'] == 'Shop' ? Icons.store : Icons.warehouse,
+              color: branch['type'] == 'Shop' ? Colors.blue : Colors.orange,
+            ),
+            title: Text(
+              branch['name'],
+              style: const TextStyle(fontWeight: FontWeight.w500),
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(branch['address']),
+                Text(
+                  '${branch['type']} • ${branch['status']}',
+                  style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                ),
+              ],
+            ),
+            trailing: IconButton(
+              icon: const Icon(Icons.edit),
+              onPressed: () {
+                _showEditBranchDialog(modalContext, branch, (updatedBranch) {
+                  setModalState(() {
+                    branches[index] = updatedBranch;
+                  });
+                });
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showAddBranchModal(BuildContext modalContext,
+      List<Map<String, dynamic>> branches, StateSetter setModalState) {
+    String selectedType = 'Shop';
+    TextEditingController branchNameController = TextEditingController();
+    TextEditingController addressController = TextEditingController();
+
+    showModalBottomSheet(
+      context: modalContext,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext innerModalContext) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setInnerModalState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(innerModalContext).viewInsets.bottom,
+                left: 20,
+                right: 20,
+                top: 20,
+              ),
+              child: Container(
+                height: MediaQuery.of(innerModalContext).size.height * 0.6,
+                width: double.infinity,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        'Add New Branch',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 20),
+                      TextField(
+                        controller: branchNameController,
+                        decoration: const InputDecoration(
+                          labelText: 'Branch Name',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      TextField(
+                        controller: addressController,
+                        decoration: const InputDecoration(
+                          labelText: 'Address',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      DropdownButtonFormField<String>(
+                        value: selectedType,
+                        decoration: const InputDecoration(
+                          labelText: 'Branch Type',
+                          border: OutlineInputBorder(),
+                        ),
+                        items: ['Shop', 'Warehouse'].map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setInnerModalState(() {
+                            selectedType = newValue!;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () => Navigator.pop(innerModalContext),
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.grey),
+                              child: const Text('Cancel'),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                final name = branchNameController.text;
+                                final address = addressController.text;
+                                if (name.isNotEmpty) {
+                                  final newBranch = {
+                                    'id': branches.length + 1,
+                                    'name': name,
+                                    'type': selectedType,
+                                    'address': address.isNotEmpty
+                                        ? address
+                                        : 'No address',
+                                    'status': 'Active',
+                                  };
+                                  try {
+                                    await ref
+                                        .read(authProvider.notifier)
+                                        .addBranch(name, address, selectedType);
+                                  } catch (error) {}
+                                  setModalState(() {
+                                    branches.add(newBranch);
+                                  });
+                                  Navigator.pop(innerModalContext);
+                                  ScaffoldMessenger.of(innerModalContext)
+                                      .showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                          'Branch "$name" added successfully!'),
+                                      backgroundColor: Colors.green,
+                                    ),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(innerModalContext)
+                                      .showSnackBar(
+                                    const SnackBar(
+                                        content:
+                                            Text('Please enter a branch name')),
+                                  );
+                                }
+                              },
+                              child: const Text('Add Branch'),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showEditBranchDialog(BuildContext context, Map<String, dynamic> branch,
+      Function(Map<String, dynamic>) onUpdate) {
+    TextEditingController nameController =
+        TextEditingController(text: branch['name']);
+    TextEditingController addressController =
+        TextEditingController(text: branch['address']);
+    String selectedType = branch['type'];
+
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              title: const Text('Edit Branch'),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: nameController,
+                      decoration: const InputDecoration(
+                        labelText: 'Branch Name',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    TextField(
+                      controller: addressController,
+                      decoration: const InputDecoration(
+                        labelText: 'Address',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    DropdownButtonFormField<String>(
+                      value: selectedType,
+                      decoration: const InputDecoration(
+                        labelText: 'Branch Type',
+                        border: OutlineInputBorder(),
+                      ),
+                      items: ['Shop', 'Warehouse'].map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        setDialogState(() {
+                          selectedType = newValue!;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(dialogContext),
+                  child: const Text('Cancel'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    final updatedBranch = {
+                      'id': branch['id'],
+                      'name': nameController.text,
+                      'type': selectedType,
+                      'address': addressController.text.isNotEmpty
+                          ? addressController.text
+                          : 'No address',
+                      'status': branch['status'],
+                    };
+                    onUpdate(updatedBranch);
+                    Navigator.pop(dialogContext);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Branch updated successfully!'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  },
+                  child: const Text('Update'),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 
@@ -388,7 +539,7 @@ class _AdminProfileScreenState extends ConsumerState<AdminProfileScreen> {
 
   Widget _buildBox(String title, IconData icon, VoidCallback onTap) {
     return InkWell(
-      onTap: onTap, // 👈 handles the tap
+      onTap: onTap,
       borderRadius: BorderRadius.circular(10),
       child: Container(
         width: 150,
@@ -404,37 +555,6 @@ class _AdminProfileScreenState extends ConsumerState<AdminProfileScreen> {
             SizedBox(height: 6),
             Text(title),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSelectableButton(
-      String label, String selected, void Function(void Function()) setState) {
-    final bool isSelected = selected == label;
-
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          selected = label;
-        });
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.blue : Colors.grey[200],
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: isSelected ? Colors.blue : Colors.grey,
-            width: 1,
-          ),
-        ),
-        child: Text(
-          label.toUpperCase(),
-          style: TextStyle(
-            color: isSelected ? Colors.white : Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
         ),
       ),
     );
