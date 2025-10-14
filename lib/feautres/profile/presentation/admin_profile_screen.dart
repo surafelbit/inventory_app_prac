@@ -394,7 +394,7 @@ class _AdminProfileScreenState extends ConsumerState<AdminProfileScreen> {
                                   try {
                                     await ref
                                         .read(authProvider.notifier)
-                                        .addBranch(name, address, selectedType);
+                                        .addBranch(name, address, selectedType);//billie jean
                                   } catch (error) {}
                                   setModalState(() {
                                     branches.add(newBranch);
