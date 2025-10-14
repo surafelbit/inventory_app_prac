@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../models/user_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
   static const String baseUrl =
@@ -59,6 +60,34 @@ class ApiService {
       }
     } catch (e) {
       throw Exception('Login error: $e');
+    }
+  }
+
+  static Future<Map<String, dynamic>> addBranch(
+      String name, String address, String type) async {
+    final url = Uri.parse('$baseUrl/branches');
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    print(token);
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token', // 🔒 send JWT to backend
+        },
+        body: jsonEncode({'name': name, 'address': address, 'HouseType': type}),
+      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        print(response);
+        return jsonDecode(response.body);
+      } else {
+        throw Exception('Failed to add branch');
+      }
+    } catch (error) {
+      print(error);
+      throw Exception(
+          'Error creating branch: $error'); // <-- ensures a return or throw
     }
   }
 

@@ -33,9 +33,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  Future<void> addBranch(String name, String address, String branchType) async {
-    try {} catch (error) {}
-  }
+  // Future<void> addBranch(String name, String address, String branchType) async {
+  //   try {} catch (error) {}
+  // }
 
   Future<void> loginAdmin(String email, String password) async {
     try {
@@ -46,6 +46,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', token);
       await prefs.setString('user', admin.toJsonString());
+
       state = state.copyWith(
         isLoading: false,
         isLoggedIn: true,

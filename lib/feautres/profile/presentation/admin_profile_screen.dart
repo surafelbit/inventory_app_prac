@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/services/api_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../state/auth/auth_provider.dart';
 
@@ -296,7 +297,9 @@ class _AdminProfileScreenState extends ConsumerState<AdminProfileScreen> {
 
   void _showAddBranchModal(BuildContext modalContext,
       List<Map<String, dynamic>> branches, StateSetter setModalState) {
-    String selectedType = 'Shop';
+    String selectedType = 'SHOP';
+    bool isLoading = false;
+
     TextEditingController branchNameController = TextEditingController();
     TextEditingController addressController = TextEditingController();
 
@@ -352,7 +355,7 @@ class _AdminProfileScreenState extends ConsumerState<AdminProfileScreen> {
                           labelText: 'Branch Type',
                           border: OutlineInputBorder(),
                         ),
-                        items: ['Shop', 'Warehouse'].map((String value) {
+                        items: ['SHOP', 'WAREHOUSE'].map((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
                             child: Text(value),
@@ -385,17 +388,36 @@ class _AdminProfileScreenState extends ConsumerState<AdminProfileScreen> {
                                   final newBranch = {
                                     'id': branches.length + 1,
                                     'name': name,
-                                    'type': selectedType,
+                                    'houseType': selectedType,
                                     'address': address.isNotEmpty
                                         ? address
                                         : 'No address',
                                     'status': 'Active',
                                   };
+                                  setState(() => isLoading = true);
                                   try {
-                                    await ref
-                                        .read(authProvider.notifier)
-                                        .addBranch(name, address, selectedType);
-                                  } catch (error) {}
+                                    final result = await ApiService.addBranch(
+                                        name, address, selectedType);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(
+                                              "Branch added: ${result['name']}")),
+                                    );
+                                  } catch (error) {
+                                    print('error, this is the error ${error}');
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text("Error: $error")),
+                                    );
+                                  } finally {
+                                    setState(() => isLoading = false);
+                                  }
+                                  // try {
+                                  //   await ref
+                                  //       .read(authProvider.notifier)
+                                  //       .addBranch(name, address, selectedType);
+                                  // } catch (error) {
+                                  //   print(error);
+                                  // }
                                   setModalState(() {
                                     branches.add(newBranch);
                                   });
@@ -475,7 +497,7 @@ class _AdminProfileScreenState extends ConsumerState<AdminProfileScreen> {
                         labelText: 'Branch Type',
                         border: OutlineInputBorder(),
                       ),
-                      items: ['Shop', 'Warehouse'].map((String value) {
+                      items: ['SHOP', 'WAREHOUSE'].map((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(value),
