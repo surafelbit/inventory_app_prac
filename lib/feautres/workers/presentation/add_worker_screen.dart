@@ -46,7 +46,7 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
 //   showModalBottomSheet(
 //     context: context,
 //     backgroundColor: Colors.white,
-//     isScrollControlled: true, // makes it slide higher when keyboard opensld
+//     isScrollControlled: true, // makes it slide higher when keyboard opens
 //     shape: const RoundedRectangleBorder(
 //       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
 //     ),
