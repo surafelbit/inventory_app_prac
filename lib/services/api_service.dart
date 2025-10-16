@@ -109,6 +109,24 @@ class ApiService {
     }
   }
 
+  static Future<List<dynamic>> fetchWorker() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      final url = Uri.parse('$baseUrl/workers');
+      final response =
+          await http.get(url, headers: {'Authorization': 'Bearer $token'});
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // ✅ jsonDecode returns a List<dynamic>
+        return jsonDecode(response.body);
+      } else {
+        throw Exception('Failed to fetch branch');
+      }
+    } catch (error) {
+      throw Exception('Error fetching branch: $error');
+    }
+  }
+
   /// Example: Future extension for other APIs
   /*
   static Future<UserModel> getProfile(String token) async {
