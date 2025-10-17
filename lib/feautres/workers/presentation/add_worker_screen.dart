@@ -34,12 +34,7 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
             },
           )
           .toList();
-      if (!response.isEmpty) {
-        //  setState(() {
-        //       Workers = json.decode(response);
-        //       isLoadingWorkers = false;
-        //     });
-      }
+
       setState(() {
         isLoadingWorkers = false;
       });
@@ -187,7 +182,7 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                       TextField(
                         controller: phoneNumberController,
                         decoration: const InputDecoration(
-                          labelText: 'Address',
+                          labelText: 'Phone Number',
                           border: OutlineInputBorder(),
                         ),
                       ),
@@ -204,7 +199,9 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                                 _obscureText = !_obscureText;
                               });
                             },
-                            icon: Icon(Icons.visibility),
+                            icon: _obscureText
+                                ? Icon(Icons.visibility)
+                                : Icon(Icons.vpn_key),
                           ),
                           border: OutlineInputBorder(),
                         ),
