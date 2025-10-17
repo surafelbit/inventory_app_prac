@@ -212,14 +212,29 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                         decoration: InputDecoration(
                           labelText: 'Select Role',
                           border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12)),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                           contentPadding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 10),
                         ),
+                        isExpanded: true, // allows full width
+                        // 👇 What is displayed when dropdown is closed
+                        selectedItemBuilder: (context) {
+                          return roles.map((role) {
+                            return Text(
+                              role['label'], // only show title like "Sales"
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                              overflow: TextOverflow.ellipsis,
+                            );
+                          }).toList();
+                        },
+                        // 👇 What is displayed when dropdown is open
                         items: roles.map((role) {
                           return DropdownMenuItem<String>(
                             value: role['value'],
                             child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 CircleAvatar(
                                   radius: 15,
@@ -228,20 +243,26 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                                       size: 18, color: Colors.white),
                                 ),
                                 const SizedBox(width: 12),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      role['label'],
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      role['description'],
-                                      style: const TextStyle(
-                                          fontSize: 12, color: Colors.grey),
-                                    ),
-                                  ],
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        role['label'],
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        role['description'],
+                                        style: const TextStyle(
+                                            fontSize: 12, color: Colors.grey),
+                                        softWrap: true,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
@@ -253,6 +274,217 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                           });
                         },
                       ),
+                      const SizedBox(height: 20),
+//                       SizedBox(
+//                         width: double.infinity, // Full width
+//                         child: ElevatedButton(
+//                           onPressed: () async {
+//                             List<Map<String, dynamic>> allowedPermissions = [];
+//                             bool isLoadingPermissions = false; // Fixed typo
+
+//                             try {
+//                               setInnerModalState(
+//                                   () => isLoadingPermissions = true);
+//                               final response =
+//                                   await ApiService.fetchPermissions();
+//                               setInnerModalState(() {
+//                                 allowedPermissions = response
+//                                     .map((perm) => {
+//                                           'id': perm['id'],
+//                                           'name': perm['name'],
+//                                           'description': perm['description'],
+//                                           'category': perm['category'],
+//                                           'createdAt': perm['createdAt'],
+//                                           'updatedAt': perm['updatedAt'],
+//                                         })
+//                                     .toList();
+//                                 isLoadingPermissions = false;
+//                               });
+//                               isLoadingPermissions ? showModalBottomSheet(context: modalContext, builder: (BuildContext innerModalContext){
+// return CircularProgressIndicator();
+//                               });
+//                               showModalBottomSheet(
+//                                 context: modalContext,
+//                                 isScrollControlled: true,
+//                                 backgroundColor: Colors.white,
+//                                 builder: (BuildContext innerModalContext) {
+//                                   return StatefulBuilder(
+//                                     builder: (BuildContext context,
+//                                         StateSetter setInnerModalState) {
+//                                       return Container(
+//                                         padding: const EdgeInsets.all(16),
+//                                         height:
+//                                             MediaQuery.of(context).size.height *
+//                                                 0.7,
+//                                         child: isLoadingPermissions
+//                                             ? const Center(
+//                                                 child:
+//                                                     CircularProgressIndicator())
+//                                             : ListView.builder(
+//                                                 itemCount:
+//                                                     allowedPermissions.length,
+//                                                 itemBuilder: (context, index) {
+//                                                   final perm =
+//                                                       allowedPermissions[index];
+//                                                   return ListTile(
+//                                                     title: Text(perm['name']),
+//                                                     subtitle: Text(
+//                                                         perm['description']),
+//                                                     leading: Text(
+//                                                         perm['id'].toString()),
+//                                                   );
+//                                                 },
+//                                               ),
+//                                       );
+//                                     },
+//                                   );
+//                                 },
+//                               );
+//                             } catch (error) {
+//                               setInnerModalState(
+//                                   () => isLoadingPermissions = false);
+
+//                             }
+//                           },
+//                           style: ElevatedButton.styleFrom(
+//                             backgroundColor: Colors.purple,
+//                             padding: const EdgeInsets.symmetric(
+//                                 vertical: 16), // Height control
+//                             shape: RoundedRectangleBorder(
+//                               borderRadius: BorderRadius.circular(20),
+//                             ),
+//                             elevation: 5,
+//                           ),
+//                           child: const Row(
+//                             mainAxisSize:
+//                                 MainAxisSize.min, // Keeps content centered
+//                             mainAxisAlignment:
+//                                 MainAxisAlignment.center, // Center text + icon
+//                             children: [
+//                               Icon(Icons.send, size: 20, color: Colors.white),
+//                               SizedBox(width: 8),
+//                               Text(
+//                                 'Send',
+//                                 style: TextStyle(
+//                                   fontSize: 16,
+//                                   fontWeight: FontWeight.bold,
+//                                   color: Colors.white, // Ensure readability
+//                                 ),
+//                               ),
+//                             ],
+//                           ),
+//                         ),
+//                       ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            // Show circular loading modal immediately
+                            showDialog(
+                              context: modalContext,
+                              barrierDismissible:
+                                  false, // user cannot close while loading
+                              builder: (context) => const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+
+                            List<Map<String, dynamic>> allowedPermissions = [];
+
+                            try {
+                              // Fetch permissions
+                              final response =
+                                  await ApiService.fetchPermissions();
+
+                              allowedPermissions = response
+                                  .map((perm) => {
+                                        'id': perm['id'],
+                                        'name': perm['name'],
+                                        'description': perm['description'],
+                                        'category': perm['category'],
+                                        'createdAt': perm['createdAt'],
+                                        'updatedAt': perm['updatedAt'],
+                                      })
+                                  .toList();
+
+                              // Close the loading dialog
+                              Navigator.of(modalContext).pop();
+
+                              // Show the modal with fetched permissions
+                              showModalBottomSheet(
+                                context: modalContext,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.white,
+                                builder: (BuildContext innerModalContext) {
+                                  return Container(
+                                    padding: const EdgeInsets.all(16),
+                                    height: MediaQuery.of(innerModalContext)
+                                            .size
+                                            .height *
+                                        0.7,
+                                    child: ListView.builder(
+                                      itemCount: allowedPermissions.length,
+                                      itemBuilder: (context, index) {
+                                        final perm = allowedPermissions[index];
+                                        return ListTile(
+                                          title: Text(perm['name']),
+                                          subtitle: Text(perm['description']),
+                                          leading: Text(perm['id'].toString()),
+                                        );
+                                      },
+                                    ),
+                                  );
+                                },
+                              );
+                            } catch (error) {
+                              // Close the loading dialog in case of error
+                              Navigator.of(modalContext).pop();
+
+                              // Show error message
+                              showDialog(
+                                context: modalContext,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('Error'),
+                                  content: Text(
+                                      'Failed to fetch permissions: $error'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
+                                      child: const Text('OK'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.purple,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            elevation: 5,
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.send, size: 20, color: Colors.white),
+                              SizedBox(width: 8),
+                              Text(
+                                'Send',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
                       const SizedBox(height: 20),
                       Row(
                         children: [

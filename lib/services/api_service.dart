@@ -91,6 +91,23 @@ class ApiService {
     }
   }
 
+  static Future<List<Map<String, dynamic>>> fetchPermissions() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final url = Uri.parse('$baseUrl/workers/permissions');
+      final token = prefs.getString('token');
+      final response =
+          await http.get(url, headers: {'Authorization': 'Bearer $token'});
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        throw Exception('Failed to fetch branch');
+      }
+    } catch (error) {
+      throw Exception('Error fetching branch: $error');
+    }
+  }
+
   static Future<List<dynamic>> fetchBranch() async {
     try {
       final prefs = await SharedPreferences.getInstance();
