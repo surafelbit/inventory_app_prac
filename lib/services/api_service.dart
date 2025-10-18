@@ -99,6 +99,7 @@ class ApiService {
       final response =
           await http.get(url, headers: {'Authorization': 'Bearer $token'});
       if (response.statusCode == 200) {
+        print(response.body);
         return jsonDecode(response.body);
       } else {
         throw Exception('Failed to fetch branch');

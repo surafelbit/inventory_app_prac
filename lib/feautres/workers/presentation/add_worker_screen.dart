@@ -395,7 +395,7 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                               // Fetch permissions
                               final response =
                                   await ApiService.fetchPermissions();
-
+                              print(response);
                               allowedPermissions = response
                                   .map((perm) => {
                                         'id': perm['id'],
