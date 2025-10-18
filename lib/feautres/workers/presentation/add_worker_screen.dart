@@ -416,23 +416,75 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                                 isScrollControlled: true,
                                 backgroundColor: Colors.white,
                                 builder: (BuildContext innerModalContext) {
-                                  return Container(
-                                    padding: const EdgeInsets.all(16),
-                                    height: MediaQuery.of(innerModalContext)
-                                            .size
-                                            .height *
-                                        0.7,
-                                    child: ListView.builder(
-                                      itemCount: allowedPermissions.length,
-                                      itemBuilder: (context, index) {
-                                        final perm = allowedPermissions[index];
-                                        return ListTile(
-                                          title: Text(perm['name']),
-                                          subtitle: Text(perm['description']),
-                                          leading: Text(perm['id'].toString()),
-                                        );
-                                      },
-                                    ),
+                                  List<String> selectedPermissions =
+                                      []; // keep track of selection
+
+                                  return StatefulBuilder(
+                                    builder: (context, setState) {
+                                      // <-- setState for bottom sheet
+                                      return Container(
+                                        padding: const EdgeInsets.all(16),
+                                        height: MediaQuery.of(innerModalContext)
+                                                .size
+                                                .height *
+                                            0.7,
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              'Select Permissions',
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            const SizedBox(height: 16),
+                                            Expanded(
+                                              child: ListView.builder(
+                                                itemCount:
+                                                    allowedPermissions.length,
+                                                itemBuilder: (context, index) {
+                                                  final perm =
+                                                      allowedPermissions[index];
+                                                  final isSelected =
+                                                      selectedPermissions
+                                                          .contains(perm['id']);
+
+                                                  return CheckboxListTile(
+                                                    value: isSelected,
+                                                    onChanged: (bool? value) {
+                                                      setState(() {
+                                                        // <-- IMPORTANT
+                                                        if (value == true) {
+                                                          selectedPermissions
+                                                              .add(perm['id']);
+                                                        } else {
+                                                          selectedPermissions
+                                                              .remove(
+                                                                  perm['id']);
+                                                        }
+                                                      });
+                                                    },
+                                                    title: Text(perm['name']),
+                                                    subtitle: Text(
+                                                        perm['description']),
+                                                    secondary: Icon(Icons.abc),
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                print(
+                                                    'Selected Permissions: $selectedPermissions');
+                                                // Here you can call your API to send them
+                                                Navigator.of(innerModalContext)
+                                                    .pop(); // close modal
+                                              },
+                                              child: Text('Send Selected'),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
                                   );
                                 },
                               );

@@ -99,8 +99,12 @@ class ApiService {
       final response =
           await http.get(url, headers: {'Authorization': 'Bearer $token'});
       if (response.statusCode == 200) {
-        print(response.body);
-        return jsonDecode(response.body);
+        final List<dynamic> data = jsonDecode(response.body);
+        // Cast each item to Map<String, dynamic>
+        return data
+            .map<Map<String, dynamic>>(
+                (item) => Map<String, dynamic>.from(item))
+            .toList();
       } else {
         throw Exception('Failed to fetch branch');
       }
