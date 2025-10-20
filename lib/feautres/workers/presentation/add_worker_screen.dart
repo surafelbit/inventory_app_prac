@@ -17,9 +17,12 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
   @override
   void initState() {
     super.initState();
-    fetchUsers(); // like useEffect(() => fetchUsers(), [])
+    fetchUsers();
+    fetchBranch();
+    // like useEffect(() => fetchUsers(), [])
   }
 
+  List<Map<String, dynamic>> formattedBranches = [];
   Future<void> fetchUsers() async {
     try {
       final response = await ApiService.fetchWorker();
@@ -42,6 +45,23 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
       setState(() {
         isLoadingWorkers = false;
       });
+    }
+  }
+
+  Future<void> fetchBranch() async {
+    try {
+      final response = await ApiService.fetchBranch();
+      formattedBranches = response.map((branch) {
+        return {
+          'id': branch['id'] ?? '',
+          'name': branch['name'] ?? '',
+          'type': branch['houseType'] == 'SHOP' ? 'Shop' : 'Warehouse',
+          'address': branch['address'] ?? '',
+          'status': 'Active', // dummy status
+        };
+      }).toList();
+    } catch (error) {
+      print(error);
     }
   }
 
@@ -274,107 +294,74 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                           });
                         },
                       ),
+                      DropdownButtonFormField<String>(
+                        value: selectedRole,
+                        decoration: InputDecoration(
+                          labelText: 'Select Branch',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 10),
+                        ),
+                        isExpanded: true, // allows full width
+                        // 👇 What is displayed when dropdown is closed
+                        selectedItemBuilder: (context) {
+                          return formattedBranches.map((branch) {
+                            return Text(
+                              branch['name'], // only show title like "Sales"
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                              overflow: TextOverflow.ellipsis,
+                            );
+                          }).toList();
+                        },
+                        // 👇 What is displayed when dropdown is open
+                        items: formattedBranches.map((branch) {
+                          return DropdownMenuItem<String>(
+                            value: branch['name'],
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CircleAvatar(
+                                  radius: 15,
+                                  backgroundColor: Colors.green,
+                                  child: Icon(Icons.abc,
+                                      size: 18, color: Colors.white),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        branch['name'],
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      // Text(
+                                      //   role['description'],
+                                      //   style: const TextStyle(
+                                      //       fontSize: 12, color: Colors.grey),
+                                      //   softWrap: true,
+                                      // ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setInnerModalState(() {
+                            selectedRole = newValue!;
+                          });
+                        },
+                      ),
                       const SizedBox(height: 20),
-//                       SizedBox(
-//                         width: double.infinity, // Full width
-//                         child: ElevatedButton(
-//                           onPressed: () async {
-//                             List<Map<String, dynamic>> allowedPermissions = [];
-//                             bool isLoadingPermissions = false; // Fixed typo
-
-//                             try {
-//                               setInnerModalState(
-//                                   () => isLoadingPermissions = true);
-//                               final response =
-//                                   await ApiService.fetchPermissions();
-//                               setInnerModalState(() {
-//                                 allowedPermissions = response
-//                                     .map((perm) => {
-//                                           'id': perm['id'],
-//                                           'name': perm['name'],
-//                                           'description': perm['description'],
-//                                           'category': perm['category'],
-//                                           'createdAt': perm['createdAt'],
-//                                           'updatedAt': perm['updatedAt'],
-//                                         })
-//                                     .toList();
-//                                 isLoadingPermissions = false;
-//                               });
-//                               isLoadingPermissions ? showModalBottomSheet(context: modalContext, builder: (BuildContext innerModalContext){
-// return CircularProgressIndicator();
-//                               });
-//                               showModalBottomSheet(
-//                                 context: modalContext,
-//                                 isScrollControlled: true,
-//                                 backgroundColor: Colors.white,
-//                                 builder: (BuildContext innerModalContext) {
-//                                   return StatefulBuilder(
-//                                     builder: (BuildContext context,
-//                                         StateSetter setInnerModalState) {
-//                                       return Container(
-//                                         padding: const EdgeInsets.all(16),
-//                                         height:
-//                                             MediaQuery.of(context).size.height *
-//                                                 0.7,
-//                                         child: isLoadingPermissions
-//                                             ? const Center(
-//                                                 child:
-//                                                     CircularProgressIndicator())
-//                                             : ListView.builder(
-//                                                 itemCount:
-//                                                     allowedPermissions.length,
-//                                                 itemBuilder: (context, index) {
-//                                                   final perm =
-//                                                       allowedPermissions[index];
-//                                                   return ListTile(
-//                                                     title: Text(perm['name']),
-//                                                     subtitle: Text(
-//                                                         perm['description']),
-//                                                     leading: Text(
-//                                                         perm['id'].toString()),
-//                                                   );
-//                                                 },
-//                                               ),
-//                                       );
-//                                     },
-//                                   );
-//                                 },
-//                               );
-//                             } catch (error) {
-//                               setInnerModalState(
-//                                   () => isLoadingPermissions = false);
-
-//                             }
-//                           },
-//                           style: ElevatedButton.styleFrom(
-//                             backgroundColor: Colors.purple,
-//                             padding: const EdgeInsets.symmetric(
-//                                 vertical: 16), // Height control
-//                             shape: RoundedRectangleBorder(
-//                               borderRadius: BorderRadius.circular(20),
-//                             ),
-//                             elevation: 5,
-//                           ),
-//                           child: const Row(
-//                             mainAxisSize:
-//                                 MainAxisSize.min, // Keeps content centered
-//                             mainAxisAlignment:
-//                                 MainAxisAlignment.center, // Center text + icon
-//                             children: [
-//                               Icon(Icons.send, size: 20, color: Colors.white),
-//                               SizedBox(width: 8),
-//                               Text(
-//                                 'Send',
-//                                 style: TextStyle(
-//                                   fontSize: 16,
-//                                   fontWeight: FontWeight.bold,
-//                                   color: Colors.white, // Ensure readability
-//                                 ),
-//                               ),
-//                             ],
-//                           ),
-//                         ),
-//                       ),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
@@ -489,8 +476,7 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                                 },
                               );
                             } catch (error) {
-                              // Close the loading dialog in case of errore
-                              Navigator.of(modalContext).pop();
+                              // Close the loading dialog in case of error                             Navigator.of(modalContext).pop();
                               print(error);
                               // Show error message
                               showDialog(
@@ -536,7 +522,6 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                           ),
                         ),
                       ),
-
                       const SizedBox(height: 20),
                       Row(
                         children: [
@@ -555,8 +540,7 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                                   ? null
                                   : () async {
                                       final name = branchNameController.text;
-                                      final address =
-                                          phoneNumberController.text;
+                                      final phone = phoneNumberController.text;
                                       if (name.isNotEmpty) {
                                         setInnerModalState(
                                             () => isLoading = true);
@@ -564,8 +548,15 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                                         try {
                                           final result =
                                               await ApiService.addBranch(
-                                                  name, address, selectedType);
-
+                                                  name, phone, selectedType);
+                                          await ApiService.addWorkers(
+                                            name,
+                                            phone,
+                                            passwordController.text,
+                                            passwordController.text,
+                                            passwordController.text,
+                                            ['selectedRole'],
+                                          );
                                           // Update the parent modal list
                                           setModalState(() {
                                             branches.add({

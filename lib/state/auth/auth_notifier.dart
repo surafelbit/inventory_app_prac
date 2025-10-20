@@ -14,6 +14,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
       final result = await ApiService.login(phone, password);
       final token = result['access_token'] as String;
+      print(token);
       final user = UserModel.fromJson(result['worker']);
 
       // Save to SharedPreferences

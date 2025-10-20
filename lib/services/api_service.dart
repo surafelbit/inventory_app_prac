@@ -113,6 +113,40 @@ class ApiService {
     }
   }
 
+  static Future<Map<String, dynamic>> addWorkers(
+      String name,
+      String phone,
+      String password,
+      String userType,
+      String branchId,
+      List<String> permissions) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final url = Uri.parse('$baseUrl/workers');
+      final token = prefs.getString('token');
+      final response = await http.post(url, headers: {
+        'Authorization': 'Bearer $token'
+      }, body: {
+        jsonEncode({
+          'name': name,
+          'phone': phone,
+          'password': password,
+          'userType': userType,
+          'branchId': branchId,
+          'permission': permissions
+        })
+      });
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return data;
+      } else {
+        throw Exception('Failed To Add The Worker');
+      }
+    } catch (error) {
+      throw Exception(error);
+    }
+  }
+
   static Future<List<dynamic>> fetchBranch() async {
     try {
       final prefs = await SharedPreferences.getInstance();
