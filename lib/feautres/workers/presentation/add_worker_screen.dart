@@ -489,7 +489,7 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                                 },
                               );
                             } catch (error) {
-                              // Close the loading dialog in case of error
+                              // Close the loading dialog in case of errore
                               Navigator.of(modalContext).pop();
                               print(error);
                               // Show error message
