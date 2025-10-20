@@ -124,18 +124,19 @@ class ApiService {
       final prefs = await SharedPreferences.getInstance();
       final url = Uri.parse('$baseUrl/workers');
       final token = prefs.getString('token');
-      final response = await http.post(url, headers: {
-        'Authorization': 'Bearer $token'
-      }, body: {
-        jsonEncode({
-          'name': name,
-          'phone': phone,
-          'password': password,
-          'userType': userType,
-          'branchId': branchId,
-          'permission': permissions
-        })
-      });
+      final response = await http.post(url,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token', // 🔒 send JWT to backend
+          },
+          body: jsonEncode({
+            'name': name,
+            'phone': phone,
+            'password': password,
+            'userType': userType,
+            'branchId': branchId,
+            'permissions': permissions.isNotEmpty ? permissions : null
+          }));
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         return data;

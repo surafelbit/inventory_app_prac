@@ -12,6 +12,7 @@ class AddWorkerScreen extends ConsumerStatefulWidget {
 
 class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
   List<Map<String, dynamic>> formatedWorkers = [];
+  List<String> selectedPermissions = [];
   bool isLoadingWorkers = true;
   bool _obscureText = true;
   @override
@@ -60,6 +61,7 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
           'status': 'Active', // dummy status
         };
       }).toList();
+      print(formattedBranches);
     } catch (error) {
       print(error);
     }
@@ -131,17 +133,18 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
   void _showAddWorkerModal(BuildContext modalContext,
       List<Map<String, dynamic>> branches, StateSetter setModalState) {
     String selectedType = 'SHOP';
-    String selectedRole = 'Sales';
+    String selectedRole = 'SALES';
+    String selectedBranch = 'cmesoe9x40001l9c4ai9z0xbl';
     final List<Map<String, dynamic>> roles = [
       {
-        'value': 'Sales',
+        'value': 'SALES',
         'label': 'Sales',
         'icon': Icons.sell,
         'description': 'Handles selling products to customers',
         'color': Colors.green,
       },
       {
-        'value': 'Shop_Keeper',
+        'value': 'SHOP_KEEPER',
         'label': 'Shop Keeper',
         'icon': Icons.store,
         'description': 'Manages store inventory and operations',
@@ -294,8 +297,9 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                           });
                         },
                       ),
+                      const SizedBox(height: 15),
                       DropdownButtonFormField<String>(
-                        value: selectedRole,
+                        value: selectedBranch,
                         decoration: InputDecoration(
                           labelText: 'Select Branch',
                           border: OutlineInputBorder(
@@ -319,7 +323,7 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                         // 👇 What is displayed when dropdown is open
                         items: formattedBranches.map((branch) {
                           return DropdownMenuItem<String>(
-                            value: branch['name'],
+                            value: branch['id'],
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -357,7 +361,8 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                         }).toList(),
                         onChanged: (String? newValue) {
                           setInnerModalState(() {
-                            selectedRole = newValue!;
+                            selectedBranch = newValue!;
+                            print(newValue);
                           });
                         },
                       ),
@@ -403,8 +408,7 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                                 isScrollControlled: true,
                                 backgroundColor: Colors.white,
                                 builder: (BuildContext innerModalContext) {
-                                  List<String> selectedPermissions =
-                                      []; // keep track of selection
+                                  // keep track of selection
 
                                   return StatefulBuilder(
                                     builder: (context, setState) {
@@ -547,15 +551,15 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
 
                                         try {
                                           final result =
-                                              await ApiService.addBranch(
-                                                  name, phone, selectedType);
-                                          await ApiService.addWorkers(
+                                              // await ApiService.addBranch(
+                                              //     name, phone, selectedType);
+                                              await ApiService.addWorkers(
                                             name,
                                             phone,
                                             passwordController.text,
-                                            passwordController.text,
-                                            passwordController.text,
-                                            ['selectedRole'],
+                                            selectedRole,
+                                            selectedBranch,
+                                            selectedPermissions,
                                           );
                                           // Update the parent modal list
                                           setModalState(() {
@@ -586,7 +590,8 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                                         } catch (error) {
                                           // Close the inner modal
                                           Navigator.pop(innerModalContext);
-
+                                          print(
+                                              '$error this is the error that is regarding to adding users');
                                           // Show error toast
                                           Fluttertoast.showToast(
                                             msg: "Error: $error",
