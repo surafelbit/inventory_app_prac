@@ -693,7 +693,7 @@ class _AdminProfileScreenState extends ConsumerState<AdminProfileScreen> {
                                         // Close the inner modal
                                         Navigator.pop(innerModalContext);
 
-                                        // Show validation error toast
+                                        // Show validation error toastc
                                         Fluttertoast.showToast(
                                           msg: "Please enter a branch name",
                                           toastLength: Toast.LENGTH_LONG,
