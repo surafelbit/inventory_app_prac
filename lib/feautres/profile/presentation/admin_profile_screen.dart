@@ -109,6 +109,11 @@ class _AdminProfileScreenState extends ConsumerState<AdminProfileScreen> {
         //   textColor: Colors.white,
         //   fontSize: 16.0,
         // );
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('No branches found'),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 4),
+        ));
         showModalBottomSheet(
           context: context,
           isScrollControlled: true,
@@ -279,7 +284,11 @@ class _AdminProfileScreenState extends ConsumerState<AdminProfileScreen> {
     } catch (error) {
       // Close loading dialog
       Navigator.of(context).pop();
-
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Error $error'),
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 4),
+      ));
       // Show error toast
       // Fluttertoast.showToast(
       //   msg: "Failed to fetch branches: $error",
@@ -637,28 +646,45 @@ class _AdminProfileScreenState extends ConsumerState<AdminProfileScreen> {
                                           Navigator.pop(innerModalContext);
 
                                           // Show success toast
-                                          Fluttertoast.showToast(
-                                            msg:
-                                                "Branch added successfully: ${result['name']}",
-                                            toastLength: Toast.LENGTH_LONG,
-                                            gravity: ToastGravity.TOP,
-                                            backgroundColor: Colors.green,
-                                            textColor: Colors.white,
-                                            fontSize: 16.0,
+                                          // Fluttertoast.showToast(
+                                          //   msg:
+                                          //       "Branch added successfully: ${result['name']}",
+                                          //   toastLength: Toast.LENGTH_LONG,
+                                          //   gravity: ToastGravity.TOP,
+                                          //   backgroundColor: Colors.green,
+                                          //   textColor: Colors.white,
+                                          //   fontSize: 16.0,
+                                          // );
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                  "User added successfully: ${result['name']}"),
+                                              backgroundColor: Colors.green,
+                                              duration:
+                                                  const Duration(seconds: 3),
+                                            ),
                                           );
                                         } catch (error) {
                                           // Close the inner modal
                                           Navigator.pop(innerModalContext);
 
                                           // Show error toast
-                                          Fluttertoast.showToast(
-                                            msg: "Error: $error",
-                                            toastLength: Toast.LENGTH_LONG,
-                                            gravity: ToastGravity.TOP,
+                                          // Fluttertoast.showToast(
+                                          //   msg: "Error: $error",
+                                          //   toastLength: Toast.LENGTH_LONG,
+                                          //   gravity: ToastGravity.TOP,
+                                          //   backgroundColor: Colors.red,
+                                          //   textColor: Colors.white,
+                                          //   fontSize: 16.0,
+                                          // );
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                            content: Text('Error $error'),
                                             backgroundColor: Colors.red,
-                                            textColor: Colors.white,
-                                            fontSize: 16.0,
-                                          );
+                                            duration:
+                                                const Duration(seconds: 4),
+                                          ));
                                         } finally {
                                           setInnerModalState(
                                               () => isLoading = false);

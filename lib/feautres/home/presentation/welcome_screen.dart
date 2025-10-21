@@ -29,7 +29,8 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
       WarehousePage(),
       ShopScreen(),
       CreditScreen(),
-      user1!.role == "SHOP_OWNER" ? AdminProfileScreen() : ProfileScreen(),
+      user1 != null ? AdminProfileScreen() : ProfileScreen(),
+      //ProfileScreen(),
     ];
     return Scaffold(
       body: _pages[_selectedIndex],

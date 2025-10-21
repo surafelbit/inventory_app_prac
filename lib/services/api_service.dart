@@ -74,7 +74,7 @@ class ApiService {
         url,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token', // 🔒 send JWT to backendd
+          'Authorization': 'Bearer $token', // 🔒 send JWT to backend
         },
         body: jsonEncode({'name': name, 'address': address, 'houseType': type}),
       );
@@ -137,7 +137,7 @@ class ApiService {
             'branchId': branchId,
             'permissions': permissions.isNotEmpty ? permissions : null
           }));
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         final data = jsonDecode(response.body);
         return data;
       } else {

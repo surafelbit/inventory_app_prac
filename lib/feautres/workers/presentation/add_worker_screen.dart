@@ -457,7 +457,6 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                                                     title: Text(perm['name']),
                                                     subtitle: Text(
                                                         perm['description']),
-                                                    secondary: Icon(Icons.abc),
                                                   );
                                                 },
                                               ),
@@ -470,7 +469,8 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                                                 Navigator.of(innerModalContext)
                                                     .pop(); // close modal
                                               },
-                                              child: Text('Send Selected'),
+                                              child: Text(
+                                                  'Add Permissions And Go Back'),
                                             ),
                                           ],
                                         ),
@@ -501,7 +501,8 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                             }
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.purple,
+                            backgroundColor:
+                                const Color.fromARGB(255, 202, 171, 207),
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
@@ -512,10 +513,9 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.send, size: 20, color: Colors.white),
                               SizedBox(width: 8),
                               Text(
-                                'Send',
+                                'Allow Permissions',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -540,90 +540,92 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                           const SizedBox(width: 10),
                           Expanded(
                             child: ElevatedButton(
-                              onPressed: isLoading
-                                  ? null
-                                  : () async {
-                                      final name = branchNameController.text;
-                                      final phone = phoneNumberController.text;
-                                      if (name.isNotEmpty) {
-                                        setInnerModalState(
-                                            () => isLoading = true);
+                              onPressed: () async {
+                                final name = branchNameController.text;
+                                final phone = phoneNumberController.text;
+                                if (name.isNotEmpty) {
+                                  setInnerModalState(() => isLoading = true);
 
-                                        try {
-                                          final result =
-                                              // await ApiService.addBranch(
-                                              //     name, phone, selectedType);
-                                              await ApiService.addWorkers(
-                                            name,
-                                            phone,
-                                            passwordController.text,
-                                            selectedRole,
-                                            selectedBranch,
-                                            selectedPermissions,
-                                          );
-                                          // Update the parent modal list
-                                          setModalState(() {
-                                            branches.add({
-                                              'id': branches.length + 1,
-                                              'name': result['name'],
-                                              'type': result['houseType'] ??
-                                                  selectedType,
-                                              'address': result['address'] ??
-                                                  'No address',
-                                              'status': 'Active',
-                                            });
-                                          });
+                                  try {
+                                    final result =
+                                        // await ApiService.addBranch(
+                                        //     name, phone, selectedType);
+                                        await ApiService.addWorkers(
+                                      name,
+                                      phone,
+                                      passwordController.text,
+                                      selectedRole,
+                                      selectedBranch,
+                                      selectedPermissions,
+                                    );
+                                    // Update the parent modal list
+                                    setModalState(() {
+                                      branches.add({
+                                        'id': branches.length + 1,
+                                        'name': result['name'],
+                                        'type':
+                                            result['houseType'] ?? selectedType,
+                                        'address':
+                                            result['address'] ?? 'No address',
+                                        'status': 'Active',
+                                      });
+                                    });
 
-                                          // Close the inner modal
-                                          Navigator.pop(innerModalContext);
+                                    // Close the inner modal
+                                    Navigator.pop(innerModalContext);
 
-                                          // Show success toast
-                                          Fluttertoast.showToast(
-                                            msg:
-                                                "Branch added successfully: ${result['name']}",
-                                            toastLength: Toast.LENGTH_LONG,
-                                            gravity: ToastGravity.TOP,
-                                            backgroundColor: Colors.green,
-                                            textColor: Colors.white,
-                                            fontSize: 16.0,
-                                          );
-                                        } catch (error) {
-                                          // Close the inner modal
-                                          Navigator.pop(innerModalContext);
-                                          print(
-                                              '$error this is the error that is regarding to adding users');
-                                          // Show error toast
-                                          Fluttertoast.showToast(
-                                            msg: "Error: $error",
-                                            toastLength: Toast.LENGTH_LONG,
-                                            gravity: ToastGravity.TOP,
-                                            backgroundColor: Colors.red,
-                                            textColor: Colors.white,
-                                            fontSize: 16.0,
-                                          );
-                                        } finally {
-                                          setInnerModalState(
-                                              () => isLoading = false);
-                                        }
-                                      } else {
-                                        // Close the inner modal
-                                        Navigator.pop(innerModalContext);
+                                    // Show success toast
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                            "User added successfully: ${result['name']}"),
+                                        backgroundColor: Colors.green,
+                                        duration: const Duration(seconds: 3),
+                                      ),
+                                    );
+                                  } catch (error) {
+                                    // Close the inner modal
+                                    Navigator.pop(innerModalContext);
+                                    print(
+                                        '$error this is the error that is regarding to adding users');
+                                    // Show error toast
+                                    // Fluttertoast.showToast(
+                                    //   msg: "Error: $error",
+                                    //   toastLength: Toast.LENGTH_LONG,
+                                    //   gravity: ToastGravity.TOP,
+                                    //   backgroundColor: Colors.red,
+                                    //   textColor: Colors.white,
+                                    //   fontSize: 16.0,
+                                    // );
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: Text(
+                                          'Error Couldnt Add The Worker $error'),
+                                      backgroundColor: Colors.red,
+                                      duration: const Duration(seconds: 4),
+                                    ));
+                                  } finally {
+                                    setInnerModalState(() => isLoading = false);
+                                  }
+                                } else {
+                                  // Close the inner modal
+                                  Navigator.pop(innerModalContext);
 
-                                        // Show validation error toast
-                                        Fluttertoast.showToast(
-                                          msg: "Please enter a branch name",
-                                          toastLength: Toast.LENGTH_LONG,
-                                          gravity: ToastGravity.TOP,
-                                          backgroundColor: Colors.orange,
-                                          textColor: Colors.white,
-                                          fontSize: 16.0,
-                                        );
-                                      }
-                                    },
+                                  // Show validation error toast
+                                  Fluttertoast.showToast(
+                                    msg: "Please enter a branch name",
+                                    toastLength: Toast.LENGTH_LONG,
+                                    gravity: ToastGravity.TOP,
+                                    backgroundColor: Colors.orange,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0,
+                                  );
+                                }
+                              },
                               child: isLoading
                                   ? CircularProgressIndicator(
                                       color: Colors.white)
-                                  : const Text('Add Branch'),
+                                  : const Text('Add Worker'),
                             ),
                           ),
                         ],
@@ -757,28 +759,37 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                                           Navigator.pop(innerModalContext);
 
                                           // Show success toast
-                                          Fluttertoast.showToast(
-                                            msg:
-                                                "Branch added successfully: ${result['name']}",
-                                            toastLength: Toast.LENGTH_LONG,
-                                            gravity: ToastGravity.TOP,
-                                            backgroundColor: Colors.green,
-                                            textColor: Colors.white,
-                                            fontSize: 16.0,
+                                          // Fluttertoast.showToast(
+                                          //   msg:
+                                          //       "User added successfully: ${result['name']}",
+                                          //   toastLength: Toast.LENGTH_LONG,
+                                          //   gravity: ToastGravity.TOP,
+                                          //   backgroundColor: Colors.green,
+                                          //   textColor: Colors.white,
+                                          //   fontSize: 16.0,
+                                          // );
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                  "User added successfully: ${result['name']}"),
+                                              backgroundColor: Colors.green,
+                                              duration:
+                                                  const Duration(seconds: 3),
+                                            ),
                                           );
                                         } catch (error) {
                                           // Close the inner modal
                                           Navigator.pop(innerModalContext);
-
+                                          print(error);
                                           // Show error toast
-                                          Fluttertoast.showToast(
-                                            msg: "Error: $error",
-                                            toastLength: Toast.LENGTH_LONG,
-                                            gravity: ToastGravity.TOP,
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                            content: Text('Error $error'),
                                             backgroundColor: Colors.red,
-                                            textColor: Colors.white,
-                                            fontSize: 16.0,
-                                          );
+                                            duration:
+                                                const Duration(seconds: 4),
+                                          ));
                                         } finally {
                                           setInnerModalState(
                                               () => isLoading = false);
