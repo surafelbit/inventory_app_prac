@@ -74,7 +74,7 @@ class ApiService {
         url,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token', // 🔒 send JWT to backend
+          'Authorization': 'Bearer $token', // 🔒 send JWT to backendd
         },
         body: jsonEncode({'name': name, 'address': address, 'houseType': type}),
       );
