@@ -118,7 +118,7 @@ class ApiService {
       String phone,
       String password,
       String userType,
-      String branchId,
+      List<String> branchId,
       List<String> permissions) async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -134,7 +134,7 @@ class ApiService {
             'phone': phone,
             'password': password,
             'userType': userType,
-            'branchId': branchId,
+            'branchIds': branchId,
             'permissions': permissions.isNotEmpty ? permissions : null
           }));
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -175,6 +175,7 @@ class ApiService {
           await http.get(url, headers: {'Authorization': 'Bearer $token'});
       if (response.statusCode == 200 || response.statusCode == 201) {
         // ✅ jsonDecode returns a List<dynamic>
+        print(response.body);
         return jsonDecode(response.body);
       } else {
         throw Exception('Failed to fetch branch');

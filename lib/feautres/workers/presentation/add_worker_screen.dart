@@ -32,8 +32,19 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
             (e) => {
               'id': e['id'],
               'name': e['name'],
-              'address': e['branch']['name'],
-              'type': e['branch']['houseType'] == 'SHOP' ? 'Shop' : 'Warehouse',
+              'userType': e['userType'],
+              'address': e['branches'].map((e) => e['name']).toList(),
+              // 'type': e['branches'].isNotEmpty
+              //     ? e['branches']
+              //         .map((b) =>
+              //             b['houseType'] == 'SHOP' ? 'Shop' : 'Warehouse')
+              //         .toList()
+              //     : ['N/A'],
+              'type': e['branches'].isNotEmpty
+                  ? (e['branches'][0]['houseType'] == 'SHOP'
+                      ? 'Shop'
+                      : 'Warehouse')
+                  : 'N/A',
               'status': 'Active', // dummy status
             },
           )
@@ -61,7 +72,6 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
           'status': 'Active', // dummy status
         };
       }).toList();
-      print(formattedBranches);
     } catch (error) {
       print(error);
     }
@@ -371,6 +381,46 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () async {
+                            showDialog(
+                              context: modalContext,
+                              barrierDismissible: false,
+                              builder: (context) => const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                            List<Map<String, dynamic>> availableBranches = [];
+
+                            try {
+                              final response = await ApiService.fetchBranch();
+                              availableBranches = response.map((e) {
+                                return {
+                                  'id': e['id'],
+                                  'name': e['name'],
+                                  'houseType': e['houseType']
+                                };
+                              }).toList();
+                            } catch (error) {}
+                          },
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  const Color.fromARGB(255, 202, 171, 207),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10.0, horizontal: 8.0),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10))),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Assign to branches'),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () async {
                             // Show circular loading modal immediately
                             showDialog(
                               context: modalContext,
@@ -555,7 +605,8 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                                       phone,
                                       passwordController.text,
                                       selectedRole,
-                                      selectedBranch,
+                                      // selectedBranch,
+                                      ['cmesoe9x40001l9c4ai9z0xbl'],
                                       selectedPermissions,
                                     );
                                     // Update the parent modal list
@@ -873,7 +924,7 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(branch['address']),
+                ...branch['address'].map((e) => Text(e)),
                 Text(
                   '${branch['type']} • ${branch['status']}',
                   style: TextStyle(color: Colors.grey[600], fontSize: 12),
