@@ -13,6 +13,7 @@ class AddWorkerScreen extends ConsumerStatefulWidget {
 class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
   List<Map<String, dynamic>> formatedWorkers = [];
   List<String> selectedPermissions = [];
+  List<String> selectedBranchs = [];
   bool isLoadingWorkers = true;
   bool _obscureText = true;
   @override
@@ -40,6 +41,7 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
               //             b['houseType'] == 'SHOP' ? 'Shop' : 'Warehouse')
               //         .toList()
               //     : ['N/A'],
+
               'type': e['branches'].isNotEmpty
                   ? (e['branches'][0]['houseType'] == 'SHOP'
                       ? 'Shop'
@@ -162,9 +164,10 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
       },
       {
         'value': 'Admin',
-        'label': 'Admin',
+        'label': 'SHOP_OWNER',
         'icon': Icons.admin_panel_settings,
-        'description': 'Oversees system settings and staff management',
+        'description':
+            'Oversees system settings and staff management acts as the owner',
         'color': Colors.blue,
       },
     ];
@@ -308,74 +311,6 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                         },
                       ),
                       const SizedBox(height: 15),
-                      DropdownButtonFormField<String>(
-                        value: selectedBranch,
-                        decoration: InputDecoration(
-                          labelText: 'Select Branch',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 10),
-                        ),
-                        isExpanded: true, // allows full width
-                        // 👇 What is displayed when dropdown is closed
-                        selectedItemBuilder: (context) {
-                          return formattedBranches.map((branch) {
-                            return Text(
-                              branch['name'], // only show title like "Sales"
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
-                              overflow: TextOverflow.ellipsis,
-                            );
-                          }).toList();
-                        },
-                        // 👇 What is displayed when dropdown is open
-                        items: formattedBranches.map((branch) {
-                          return DropdownMenuItem<String>(
-                            value: branch['id'],
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                CircleAvatar(
-                                  radius: 15,
-                                  backgroundColor: Colors.green,
-                                  child: Icon(Icons.abc,
-                                      size: 18, color: Colors.white),
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        branch['name'],
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      const SizedBox(height: 2),
-                                      // Text(
-                                      //   role['description'],
-                                      //   style: const TextStyle(
-                                      //       fontSize: 12, color: Colors.grey),
-                                      //   softWrap: true,
-                                      // ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          setInnerModalState(() {
-                            selectedBranch = newValue!;
-                            print(newValue);
-                          });
-                        },
-                      ),
                       const SizedBox(height: 20),
                       SizedBox(
                         width: double.infinity,
@@ -399,7 +334,94 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                                   'houseType': e['houseType']
                                 };
                               }).toList();
-                            } catch (error) {}
+                              Navigator.of(modalContext).pop();
+                              showModalBottomSheet(
+                                  context: modalContext,
+                                  builder: (BuildContext innerModalContext) {
+                                    return StatefulBuilder(
+                                      builder: (context, setState) {
+                                        return Container(
+                                          padding: EdgeInsets.all(10),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                'Select Permissions',
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              const SizedBox(height: 16),
+                                              Expanded(
+                                                  child: ListView.builder(
+                                                      itemCount:
+                                                          availableBranches
+                                                              .length,
+                                                      itemBuilder:
+                                                          (context, index) {
+                                                        final perm =
+                                                            availableBranches[
+                                                                index];
+                                                        final isSelected =
+                                                            selectedBranchs
+                                                                .contains(
+                                                                    perm['id']);
+                                                        return CheckboxListTile(
+                                                          value: isSelected,
+                                                          onChanged:
+                                                              (bool? value) {
+                                                            setState(() {
+                                                              if (value ==
+                                                                  false) {
+                                                                selectedBranchs
+                                                                    .remove(perm[
+                                                                        'id']);
+                                                              } else {
+                                                                selectedBranchs
+                                                                    .add(perm[
+                                                                        'id']);
+                                                                print(
+                                                                    selectedBranchs);
+                                                              }
+                                                            });
+                                                          },
+                                                          title: Text(
+                                                              perm['name']),
+                                                        );
+                                                      })),
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  // Here you can call your API to send them
+                                                  Navigator.of(
+                                                          innerModalContext)
+                                                      .pop(); // close modal
+                                                },
+                                                child: Text(
+                                                    'Add Branches And Go Back'),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  });
+                            } catch (error) {
+                              showDialog(
+                                context: modalContext,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('Error'),
+                                  content: Text(
+                                      'Failed to fetch permissions: $error'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
+                                      child: const Text('OK'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                               backgroundColor:
@@ -408,10 +430,19 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                                   vertical: 10.0, horizontal: 8.0),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10))),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text('Assign to branches'),
+                              SizedBox(width: 8),
+                              Text(
+                                'Select Branches',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -605,8 +636,8 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                                       phone,
                                       passwordController.text,
                                       selectedRole,
-                                      // selectedBranch,
-                                      ['cmesoe9x40001l9c4ai9z0xbl'],
+                                      selectedBranchs,
+                                      // ['cmesoe9x40001l9c4ai9z0xbl'],
                                       selectedPermissions,
                                     );
                                     // Update the parent modal list
@@ -660,14 +691,13 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                                   }
                                 } else {
                                   // Close the inner modal
-                                  Navigator.pop(innerModalContext);
 
                                   // Show validation error toast
                                   Fluttertoast.showToast(
                                     msg: "Please enter a branch name",
                                     toastLength: Toast.LENGTH_LONG,
                                     gravity: ToastGravity.TOP,
-                                    backgroundColor: Colors.orange,
+                                    backgroundColor: Colors.red,
                                     textColor: Colors.white,
                                     fontSize: 16.0,
                                   );
@@ -847,14 +877,13 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                                         }
                                       } else {
                                         // Close the inner modal
-                                        Navigator.pop(innerModalContext);
 
                                         // Show validation error toast
                                         Fluttertoast.showToast(
                                           msg: "Please enter a branch name",
                                           toastLength: Toast.LENGTH_LONG,
                                           gravity: ToastGravity.TOP,
-                                          backgroundColor: Colors.orange,
+                                          backgroundColor: Colors.red,
                                           textColor: Colors.white,
                                           fontSize: 16.0,
                                         );
