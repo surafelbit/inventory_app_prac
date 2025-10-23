@@ -371,9 +371,12 @@ class _AdminProfileScreenState extends ConsumerState<AdminProfileScreen> {
   Widget build(BuildContext context) {
     final authState = ref.read(authProvider);
     print('this is the user ');
-    print(authState.user?.name);
+    print(authState.admin?.firstName);
     print('this is the user ');
-    final userName = authState.user?.name ?? 'Admin Bra'; // fallback if null
+    final userName = ((authState.admin?.firstName ?? 'Admin ') +
+        (" ") +
+        (authState.admin?.lastName ?? '')); // fallback if null
+
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
@@ -412,10 +415,6 @@ class _AdminProfileScreenState extends ConsumerState<AdminProfileScreen> {
                             ),
                           ),
                           const SizedBox(height: 5),
-                          const Text(
-                            'abebe@example.com',
-                            style: TextStyle(color: Colors.white70),
-                          ),
                         ],
                       ),
                     ],
@@ -693,7 +692,7 @@ class _AdminProfileScreenState extends ConsumerState<AdminProfileScreen> {
                                         // Close the inner modal
                                         Navigator.pop(innerModalContext);
 
-                                        // Show validation error toastc
+                                        // Show validation error toast
                                         Fluttertoast.showToast(
                                           msg: "Please enter a branch name",
                                           toastLength: Toast.LENGTH_LONG,

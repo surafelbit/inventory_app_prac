@@ -58,10 +58,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                       fontWeight: FontWeight.bold),
                                 ),
                                 const SizedBox(width: 5),
-                                const Text(
-                                  'abebe@example.com',
-                                  style: TextStyle(color: Colors.white70),
-                                ),
                               ],
                             ),
                           ),
