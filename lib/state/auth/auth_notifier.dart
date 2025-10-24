@@ -2,10 +2,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../models/user_model.dart';
 import '../../models/admin_model.dart';
+import '../../models/branch_model.dart';
 import '../../services/api_service.dart';
 import 'auth_state.dart';
 
 class AuthNotifier extends StateNotifier<AuthState> {
+  // List<BranchModel> branchList = [];
+
   AuthNotifier() : super(AuthState.initial());
 
   Future<void> login(String phone, String password) async {
@@ -16,8 +19,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final token = result['access_token'] as String;
       print(token);
       final user = UserModel.fromJson(result['worker']);
-
+      // branchList = (user as List).map((e) => BranchModel.fromJson(e)).toList();
       // Save to SharedPreferences
+      final response = result['worker'];
+      final branchList = (response['branch'] as List<dynamic>? ?? [])
+          .map((b) => BranchModel.fromJson(b))
+          .toList();
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', token);
       await prefs.setString('user', user.toJsonString());
@@ -26,6 +33,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
         isLoading: false,
         isLoggedIn: true,
         token: token,
+        branches: branchList,
         user: user,
         error: null,
       );

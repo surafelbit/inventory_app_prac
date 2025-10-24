@@ -1,5 +1,6 @@
 import '../../models/user_model.dart';
 import '../../models/admin_model.dart';
+import '../../models/branch_model.dart';
 
 class AuthState {
   final bool isLoading;
@@ -7,11 +8,13 @@ class AuthState {
   final String? token;
   final UserModel? user;
   final AdminModel? admin;
+  final List<BranchModel> branches;
   final String? error;
 
   AuthState({
     required this.isLoading,
     required this.isLoggedIn,
+    this.branches = const [],
     this.token,
     this.user,
     this.admin,
@@ -22,6 +25,7 @@ class AuthState {
     return AuthState(
       isLoading: false,
       isLoggedIn: false,
+      branches: [],
       token: null,
       user: null,
       admin: null,
@@ -34,6 +38,7 @@ class AuthState {
     bool? isLoggedIn,
     String? token,
     UserModel? user,
+    List<BranchModel>? branches,
     AdminModel? admin,
     String? error,
   }) {
@@ -41,6 +46,7 @@ class AuthState {
       isLoading: isLoading ?? this.isLoading,
       isLoggedIn: isLoggedIn ?? this.isLoggedIn,
       token: token ?? this.token,
+      branches: branches ?? this.branches,
       user: user ?? this.user,
       admin: admin ?? this.admin,
       error: error,

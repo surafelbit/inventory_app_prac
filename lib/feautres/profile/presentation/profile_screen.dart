@@ -15,8 +15,19 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Widget build(BuildContext context) {
     // final authState = ref.watch(authProvider);
     final authState = ref.read(authProvider);
+    final something = [];
+    bool workerUserType;
     print('this is the user ');
-    print(authState.user?.name);
+    print(authState.user);
+    print(authState.user);
+    print('this below is the length of the branches');
+    print(authState.branches.length);
+    print(authState.branches?.map((e) => e.houseType).toList());
+    something.addAll(authState?.branches?.map((e) => e.houseType) ?? []);
+
+    print(something);
+    print(something.contains('SHOP'));
+    workerUserType = something.contains('SHOP');
     print('this is the user ');
     final userName = authState.user?.name ?? 'Guest'; // fallback if null
     return Scaffold(

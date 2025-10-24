@@ -20,9 +20,15 @@ class WelcomeScreen extends ConsumerStatefulWidget {
 
 class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   int _selectedIndex = 0;
-
   @override
   Widget build(BuildContext context) {
+    final authState = ref.watch(authProvider);
+    final userHOUSE = [];
+    bool shopWorker;
+    bool warehouseWorker;
+    userHOUSE.addAll(authState?.branches?.map((e) => e.houseType) ?? []);
+    shopWorker = userHOUSE.contains('SHOP');
+    warehouseWorker = userHOUSE.contains('WAREHOUSE');
     final user1 = ref.watch(authProvider).admin;
     final List<Widget> _pages = [
       HomeScreen(),
@@ -37,6 +43,10 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (index) {
+          if ((index == 1 && !warehouseWorker) || (index == 2 && !shopWorker)) {
+            return; // do nothing
+          }
+
           setState(() {
             _selectedIndex = index;
           });
@@ -44,11 +54,22 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Colors.blue[600],
         unselectedItemColor: Colors.grey,
-        items: const [
+        items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.warehouse), label: 'Warehouse'),
-          BottomNavigationBarItem(icon: Icon(Icons.shop), label: 'Shop'),
+            icon: Opacity(
+              opacity: warehouseWorker ? 1.0 : 0.4, // dull if not allowed
+              child: Icon(Icons.warehouse),
+            ),
+            label: 'Warehouse',
+          ),
+          BottomNavigationBarItem(
+            icon: Opacity(
+              opacity: shopWorker ? 1.0 : 0.4, // dull if not allowed
+              child: Icon(Icons.shop),
+            ),
+            label: 'Shop',
+          ),
           BottomNavigationBarItem(
               icon: Icon(Icons.credit_card), label: 'Credit'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
