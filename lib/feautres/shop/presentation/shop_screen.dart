@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ShopScreen extends StatefulWidget {
+class ShopScreen extends ConsumerStatefulWidget {
   const ShopScreen({Key? Key}) : super(key: Key);
   @override
   _ShopScreenState createState() => _ShopScreenState();
 }
 
-class _ShopScreenState extends State<ShopScreen> {
+class _ShopScreenState extends ConsumerState<ShopScreen> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<void> getInfoAboutMe() async {
+    try {} catch (error) {}
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -56,7 +65,62 @@ class _ShopScreenState extends State<ShopScreen> {
         ),
       )),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
+        onPressed: () async {
+          try {
+            showModalBottomSheet(
+                context: context,
+                builder: (BuildContext modalContext) {
+                  return StatefulBuilder(builder: (context, setState) {
+                    return Container(
+                      padding: EdgeInsets.all(12),
+                      child: Column(
+                        children: [
+                          Text(
+                            'Select Branch',
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 16),
+                          Expanded(
+                              child: ListView.builder(
+                                  itemCount: 6,
+                                  itemBuilder: (context, index) {
+                                    return RadioListTile(
+                                        value: 'value',
+                                        groupValue: 'value',
+                                        onChanged: (value) {});
+                                  }))
+                        ],
+                      ),
+                    );
+                  });
+                  // return Padding(
+                  //   padding: EdgeInsets.only(
+                  //       left: 10, right: 10, top: 20, bottom: 40),
+                  //   child: Column(
+                  //     children: [
+                  //       Text('Choose a branch to add a product to'),
+                  //       SizedBox(height: 10),
+                  //       DropdownButtonFormField(
+                  //           value: 'data1',
+                  //           items: const [
+                  //             DropdownMenuItem(
+                  //                 value: 'data1', child: Text('data')),
+                  //             DropdownMenuItem(
+                  //                 value: 'data2', child: Text('data')),
+                  //             DropdownMenuItem(
+                  //                 value: 'data3', child: Text('data')),
+                  //           ],
+                  //           selectedItemBuilder: (context) {
+                  //             return const [Text('data')];
+                  //           },
+                  //           onChanged: (value) {})
+                  //     ],
+                  //   ),
+                  // );
+                });
+          } catch (error) {}
+        },
         label: Text("Add Items To Shop"),
         icon: Icon(Icons.add),
         backgroundColor: Colors.green,
