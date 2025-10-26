@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_app/services/api_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ShopScreen extends ConsumerStatefulWidget {
   const ShopScreen({Key? Key}) : super(key: Key);
@@ -8,13 +12,36 @@ class ShopScreen extends ConsumerStatefulWidget {
 }
 
 class _ShopScreenState extends ConsumerState<ShopScreen> {
+  List<dynamic> myBranches = [];
   @override
   void initState() {
     super.initState();
+    getInfoAboutMe();
   }
 
   Future<void> getInfoAboutMe() async {
-    try {} catch (error) {}
+    final prefs = await SharedPreferences.getInstance();
+    final user = prefs.getString('user');
+    print('this is the user id or something');
+    final userString = prefs.getString('user');
+    String userRealId = '';
+    if (userString != null) {
+      userRealId = jsonDecode(userString)['id'];
+      print(userRealId);
+    } else {
+      print('No user data found.');
+    }
+    print(user);
+    try {
+      final response = await ApiService.getInfoAboutMe(userRealId);
+      response.map((e) => {myBranches.addAll(e['branches'])});
+      print('below this is the branches in array or double array');
+      print(myBranches);
+      print('below is this the response');
+      print(response);
+    } catch (error) {
+      print(error);
+    }
   }
 
   Widget build(BuildContext context) {
