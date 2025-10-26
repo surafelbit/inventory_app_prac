@@ -17,6 +17,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
   String? selectedOption;
   bool hasManyBranches = false;
   bool gotoNext = false;
+  bool addingContent = false;
   @override
   void initState() {
     super.initState();
@@ -58,28 +59,29 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: shopBranches.length > 0
-            ? SizedBox(
-                width: double.infinity,
-                height: 40,
-                child: TextField(
-                  decoration: InputDecoration(
-                      hintText: 'Search Items In Shop',
-                      prefixIcon: Icon(
-                        Icons.search,
-                        color: Colors.grey,
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide:
-                              BorderSide(color: Colors.blue, width: 1.5))),
-                ))
-            : CircularProgressIndicator(),
-      ),
+      appBar: TopBarBuild(),
+      //  AppBar(
+      //   backgroundColor: Colors.white,
+      //   title: shopBranches.length > 0
+      //       ? SizedBox(
+      //           width: double.infinity,
+      //           height: 40,
+      //           child: TextField(
+      //             decoration: InputDecoration(
+      //                 hintText: 'Search Items In Shop',
+      //                 prefixIcon: Icon(
+      //                   Icons.search,
+      //                   color: Colors.grey,
+      //                 ),
+      //                 enabledBorder: OutlineInputBorder(
+      //                     borderRadius: BorderRadius.circular(12)),
+      //                 focusedBorder: OutlineInputBorder(
+      //                     borderRadius: BorderRadius.circular(12),
+      //                     borderSide:
+      //                         BorderSide(color: Colors.blue, width: 1.5))),
+      //           ))
+      //       : CircularProgressIndicator(),
+      // ),
       body:
           // (hasManyBranches )? CircularProgressIndicator():
           //      (SingleChildScrollView(
@@ -173,74 +175,83 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
           //         ),
           //       )),
           buildBody(),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async {
-          try {
-            showModalBottomSheet(
-                context: context,
-                builder: (BuildContext modalContext) {
-                  return StatefulBuilder(builder: (context, setState) {
-                    return Container(
-                      padding: EdgeInsets.all(12),
-                      child: Column(
-                        children: [
-                          Text(
-                            'Select Branch',
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 16),
-                          Expanded(
-                              child: ListView.builder(
-                                  itemCount: shopBranches.length,
-                                  itemBuilder: (context, index) {
-                                    final name = shopBranches[index]['name'];
-                                    final option = shopBranches[index]['id'];
-                                    return RadioListTile(
-                                        title: Text(name),
-                                        value: option,
-                                        groupValue: selectedOption,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            selectedOption = value;
-                                          });
-                                        });
-                                  }))
-                        ],
-                      ),
-                    );
+      floatingActionButton: gotoNext
+          ? FloatingActionButton.extended(
+              onPressed: () async {
+                try {
+                  setState(() {
+                    gotoNext = false;
+                    addingContent = true;
                   });
-                  // return Padding(
-                  //   padding: EdgeInsets.only(
-                  //       left: 10, right: 10, top: 20, bottom: 40),
-                  //   child: Column(
-                  //     children: [
-                  //       Text('Choose a branch to add a product to'),
-                  //       SizedBox(height: 10),
-                  //       DropdownButtonFormField(
-                  //           value: 'data1',
-                  //           items: const [
-                  //             DropdownMenuItem(
-                  //                 value: 'data1', child: Text('data')),
-                  //             DropdownMenuItem(
-                  //                 value: 'data2', child: Text('data')),
-                  //             DropdownMenuItem(
-                  //                 value: 'data3', child: Text('data')),
-                  //           ],
-                  //           selectedItemBuilder: (context) {
-                  //             return const [Text('data')];
-                  //           },
-                  //           onChanged: (value) {})
-                  //     ],
-                  //   ),
-                  // );
-                });
-          } catch (error) {}
-        },
-        label: Text("Add Items To Shop"),
-        icon: Icon(Icons.add),
-        backgroundColor: Colors.green,
-      ),
+                  // showModalBottomSheet(
+                  //     context: context,
+                  //     builder: (BuildContext modalContext) {
+                  //       return StatefulBuilder(builder: (context, setState) {
+                  //         return Container(
+                  //           padding: EdgeInsets.all(12),
+                  //           child: Column(
+                  //             children: [
+                  //               Text(
+                  //                 'Select Branch',
+                  //                 style: TextStyle(
+                  //                     fontSize: 18,
+                  //                     fontWeight: FontWeight.bold),
+                  //               ),
+                  //               const SizedBox(height: 16),
+                  //               Expanded(
+                  //                   child: ListView.builder(
+                  //                       itemCount: shopBranches.length,
+                  //                       itemBuilder: (context, index) {
+                  //                         final name =
+                  //                             shopBranches[index]['name'];
+                  //                         final option =
+                  //                             shopBranches[index]['id'];
+                  //                         return RadioListTile(
+                  //                             title: Text(name),
+                  //                             value: option,
+                  //                             groupValue: selectedOption,
+                  //                             onChanged: (value) {
+                  //                               setState(() {
+                  //                                 selectedOption = value;
+                  //                               });
+                  //                             });
+                  //                       }))
+                  //             ],
+                  //           ),
+                  //         );
+                  //       });
+                  //       // return Padding(
+                  //       //   padding: EdgeInsets.only(
+                  //       //       left: 10, right: 10, top: 20, bottom: 40),
+                  //       //   child: Column(
+                  //       //     children: [
+                  //       //       Text('Choose a branch to add a product to'),
+                  //       //       SizedBox(height: 10),
+                  //       //       DropdownButtonFormField(
+                  //       //           value: 'data1',
+                  //       //           items: const [
+                  //       //             DropdownMenuItem(
+                  //       //                 value: 'data1', child: Text('data')),
+                  //       //             DropdownMenuItem(
+                  //       //                 value: 'data2', child: Text('data')),
+                  //       //             DropdownMenuItem(
+                  //       //                 value: 'data3', child: Text('data')),
+                  //       //           ],
+                  //       //           selectedItemBuilder: (context) {
+                  //       //             return const [Text('data')];
+                  //       //           },
+                  //       //           onChanged: (value) {})
+                  //       //     ],
+                  //       //   ),
+                  //       // );
+                  //     });
+                } catch (error) {}
+              },
+              label: Text("Add Items To Shop"),
+              icon: Icon(Icons.add),
+              backgroundColor: Colors.green,
+            )
+          : null,
     );
   }
 
@@ -347,13 +358,150 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
           ],
         ),
       );
-    } else {
+    } else if (addingContent) {
       return SingleChildScrollView(
-        child: Column(
-          children: [
-            Text('Default content'),
-          ],
+          child: Container(
+        child: Padding(
+          padding: EdgeInsets.all(20),
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  const SizedBox(height: 16),
+                  const Text(
+                    "Organization Login",
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    decoration: InputDecoration(
+                      labelText: 'enter product name',
+                      border: OutlineInputBorder(
+                          //borderRadius: BorderRadius.circular(12),
+                          ),
+                    ),
+                  ),
+                  TextField(
+                    decoration: InputDecoration(
+                      labelText: 'enter product name',
+                      border: OutlineInputBorder(
+                          //borderRadius: BorderRadius.circular(12),
+                          ),
+                    ),
+                  ),
+                  TextField(
+                    decoration: InputDecoration(
+                      labelText: 'enter product name',
+                      border: OutlineInputBorder(
+                          //borderRadius: BorderRadius.circular(12),
+                          ),
+                    ),
+                  ),
+                  TextField(
+                    decoration: InputDecoration(
+                      labelText: 'enter product name',
+                      border: OutlineInputBorder(
+                          //borderRadius: BorderRadius.circular(12),
+                          ),
+                    ),
+                  ),
+                  TextField(
+                    decoration: InputDecoration(
+                      labelText: 'enter product name',
+                      border: OutlineInputBorder(
+                          //borderRadius: BorderRadius.circular(12),
+                          ),
+                    ),
+                  ),
+                  TextField(
+                    decoration: InputDecoration(
+                      labelText: 'enter product name',
+                      border: OutlineInputBorder(
+                          //borderRadius: BorderRadius.circular(12),
+                          ),
+                    ),
+                  ),
+                  TextField(
+                    decoration: InputDecoration(
+                      labelText: 'enter product name',
+                      border: OutlineInputBorder(
+                          //borderRadius: BorderRadius.circular(12),
+                          ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
+      ));
+    }
+    return Center(child: Text('Nothing to show'));
+  }
+
+  PreferredSizeWidget TopBarBuild() {
+    if (shopBranches.isEmpty) {
+      return AppBar(
+        title: Text('Loading your branches'),
+        actions: [CircularProgressIndicator()],
+      );
+    } else if (hasManyBranches) {
+      return AppBar(
+        title: Text('Please select your branches'),
+      );
+    } else if (gotoNext) {
+      return AppBar(
+        backgroundColor: Colors.white,
+        title: SizedBox(
+            width: double.infinity,
+            height: 40,
+            child: TextField(
+              decoration: InputDecoration(
+                  hintText: 'Search Items In Shop',
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: Colors.grey,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.blue, width: 1.5))),
+            )),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              setState(() {
+                gotoNext = false;
+                hasManyBranches = true;
+              });
+            },
+          ),
+        ],
+      );
+    } else if (addingContent) {
+      return AppBar(
+        title: Text('Adding Shop Items'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              setState(() {
+                addingContent = false;
+                gotoNext = true;
+              });
+            },
+          ),
+        ],
+      );
+    } else {
+      return AppBar(
+        title: Text('Trying incase it fails'),
+        actions: [CircularProgressIndicator()],
       );
     }
   }
