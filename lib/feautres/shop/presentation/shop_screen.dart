@@ -13,6 +13,10 @@ class ShopScreen extends ConsumerStatefulWidget {
 
 class _ShopScreenState extends ConsumerState<ShopScreen> {
   List<dynamic> myBranches = [];
+  List<dynamic> shopBranches = [];
+  String? selectedOption;
+  bool hasManyBranches = false;
+  bool gotoNext = false;
   @override
   void initState() {
     super.initState();
@@ -27,6 +31,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
     String userRealId = '';
     if (userString != null) {
       userRealId = jsonDecode(userString)['id'];
+      print('this got to be the user id');
       print(userRealId);
     } else {
       print('No user data found.');
@@ -34,11 +39,18 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
     print(user);
     try {
       final response = await ApiService.getInfoAboutMe(userRealId);
-      response.map((e) => {myBranches.addAll(e['branches'])});
-      print('below this is the branches in array or double array');
-      print(myBranches);
-      print('below is this the response');
-      print(response);
+      final branches = response['branches'] ?? [];
+
+      setState(() {
+        myBranches = branches;
+        shopBranches =
+            myBranches.where((e) => e['houseType'] == 'SHOP').toList();
+        if (shopBranches.length == 1) gotoNext = true;
+        hasManyBranches = shopBranches.length > 1;
+        if (shopBranches.isNotEmpty) selectedOption = shopBranches[0]['id'];
+        // if (shopBranches.isNotEmpty && selectedOption == null)
+        //   selectedOption = shopBranches[0]['id'];
+      });
     } catch (error) {
       print(error);
     }
@@ -48,49 +60,119 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: SizedBox(
-            width: double.infinity,
-            height: 40,
-            child: TextField(
-              decoration: InputDecoration(
-                  hintText: 'Search Items In Shop',
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: Colors.grey,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.blue, width: 1.5))),
-            )),
+        title: shopBranches.length > 0
+            ? SizedBox(
+                width: double.infinity,
+                height: 40,
+                child: TextField(
+                  decoration: InputDecoration(
+                      hintText: 'Search Items In Shop',
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: Colors.grey,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide:
+                              BorderSide(color: Colors.blue, width: 1.5))),
+                ))
+            : CircularProgressIndicator(),
       ),
-      body: (SingleChildScrollView(
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Row(
-                  children: [Text('filter'), Icon(Icons.filter_alt)],
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Row(
-                  children: [Text('sort'), Icon(Icons.sort)],
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Row(
-                  children: [Text('collection'), Icon(Icons.collections)],
-                ),
-              ],
-            )
-          ],
-        ),
-      )),
+      body:
+          // (hasManyBranches )? CircularProgressIndicator():
+          //      (SingleChildScrollView(
+          //         child: Column(
+          //           children: [
+          //             Row(
+          //               mainAxisAlignment: MainAxisAlignment.spaceAround,
+          //               children: [
+          //                 Row(
+          //                   children: [Text('filter'), Icon(Icons.filter_alt)],
+          //                 ),
+          //                 SizedBox(
+          //                   width: 10,
+          //                 ),
+          //                 Row(
+          //                   children: [Text('sort'), Icon(Icons.sort)],
+          //                 ),
+          //                 SizedBox(
+          //                   width: 10,
+          //                 ),
+          //                 Row(
+          //                   children: [Text('collection'), Icon(Icons.collections)],
+          //                 ),
+          //               ],
+          //             ),
+          //             Container(
+          //               child: Padding(
+          //                 padding: EdgeInsets.all(20),
+          //                 child: Row(
+          //                   children: [
+          //                     const SizedBox(height: 15),
+          //                     Text('first pick a shop'),
+          //                     Expanded(
+          //                       child: DropdownButtonFormField<String>(
+          //                         value: selectedOption,
+          //                         decoration: InputDecoration(
+          //                           labelText: 'Select Branch',
+          //                           border: OutlineInputBorder(
+          //                             borderRadius: BorderRadius.circular(12),
+          //                           ),
+          //                           contentPadding: const EdgeInsets.symmetric(
+          //                               horizontal: 16, vertical: 10),
+          //                         ),
+          //                         isExpanded: true,
+          //                         selectedItemBuilder: (context) {
+          //                           return shopBranches.map((shop) {
+          //                             return Text(
+          //                               shop['name'],
+          //                               style: const TextStyle(
+          //                                   fontWeight: FontWeight.bold),
+          //                               overflow: TextOverflow.ellipsis,
+          //                             );
+          //                           }).toList();
+          //                         },
+          //                         items: shopBranches.map((shop) {
+          //                           return DropdownMenuItem<String>(
+          //                             value: shop['id'],
+          //                             child: Row(
+          //                               children: [
+          //                                 CircleAvatar(
+          //                                   radius: 15,
+          //                                   backgroundColor: Colors.green,
+          //                                   child: Icon(Icons.shop,
+          //                                       size: 18, color: Colors.white),
+          //                                 ),
+          //                                 const SizedBox(width: 12),
+          //                                 Expanded(
+          //                                   child: Text(
+          //                                     shop['name'],
+          //                                     style: const TextStyle(
+          //                                         fontWeight: FontWeight.bold),
+          //                                   ),
+          //                                 ),
+          //                               ],
+          //                             ),
+          //                           );
+          //                         }).toList(),
+          //                         onChanged: (String? newValue) {
+          //                           setState(() {
+          //                             selectedOption = newValue!;
+          //                             hasManyBranches = false;
+          //                           });
+          //                         },
+          //                       ),
+          //                     )
+          //                   ],
+          //                 ),
+          //               ),
+          //             )
+          //           ],
+          //         ),
+          //       )),
+          buildBody(),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           try {
@@ -110,12 +192,19 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                           const SizedBox(height: 16),
                           Expanded(
                               child: ListView.builder(
-                                  itemCount: 6,
+                                  itemCount: shopBranches.length,
                                   itemBuilder: (context, index) {
+                                    final name = shopBranches[index]['name'];
+                                    final option = shopBranches[index]['id'];
                                     return RadioListTile(
-                                        value: 'value',
-                                        groupValue: 'value',
-                                        onChanged: (value) {});
+                                        title: Text(name),
+                                        value: option,
+                                        groupValue: selectedOption,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            selectedOption = value;
+                                          });
+                                        });
                                   }))
                         ],
                       ),
@@ -153,5 +242,119 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
         backgroundColor: Colors.green,
       ),
     );
+  }
+
+  Widget buildBody() {
+    if (shopBranches.isEmpty) {
+      return CircularProgressIndicator();
+    } else if (hasManyBranches) {
+      return (SingleChildScrollView(
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              // children: [
+              //   Row(
+              //     children: [Text('filter'), Icon(Icons.filter_alt)],
+              //   ),
+              //   SizedBox(
+              //     width: 10,
+              //   ),
+              //   Row(
+              //     children: [Text('sort'), Icon(Icons.sort)],
+              //   ),
+              //   SizedBox(
+              //     width: 10,
+              //   ),
+              //   Row(
+              //     children: [Text('collection'), Icon(Icons.collections)],
+              //   ),
+              // ],
+            ),
+            Container(
+              child: Padding(
+                padding: EdgeInsets.all(20),
+                child: Row(
+                  children: [
+                    const SizedBox(height: 15),
+                    Text('first pick a shop'),
+                    Expanded(
+                      child: DropdownButtonFormField<String>(
+                        value: selectedOption,
+                        decoration: InputDecoration(
+                          labelText: 'Select Branch',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 10),
+                        ),
+                        isExpanded: true,
+                        selectedItemBuilder: (context) {
+                          return shopBranches.map((shop) {
+                            return Text(
+                              shop['name'],
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                              overflow: TextOverflow.ellipsis,
+                            );
+                          }).toList();
+                        },
+                        items: shopBranches.map((shop) {
+                          return DropdownMenuItem<String>(
+                            value: shop['id'],
+                            child: Row(
+                              children: [
+                                CircleAvatar(
+                                  radius: 15,
+                                  backgroundColor: Colors.green,
+                                  child: Icon(Icons.shop,
+                                      size: 18, color: Colors.white),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    shop['name'],
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            gotoNext = true;
+                            selectedOption = newValue!;
+                            hasManyBranches = false;
+                          });
+                        },
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
+      ));
+    } else if (gotoNext) {
+      return SingleChildScrollView(
+        child: Column(
+          children: [
+            Text('Default content Man'),
+          ],
+        ),
+      );
+    } else {
+      return SingleChildScrollView(
+        child: Column(
+          children: [
+            Text('Default content'),
+          ],
+        ),
+      );
+    }
   }
 }

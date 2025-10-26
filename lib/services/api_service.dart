@@ -185,11 +185,15 @@ class ApiService {
     }
   }
 
-  static Future<List<dynamic>> getInfoAboutMe(String userID) async {
+  static Future<Map<String, dynamic>> getInfoAboutMe(String userID) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
-      final url = Uri.parse('$baseUrl/workers/getme?users=$userID');
+
+      print('this is the apiservices user id received');
+      print(token);
+      print(userID);
+      final url = Uri.parse('$baseUrl/workers/getme?userid=$userID');
       final response =
           await http.get(url, headers: {'Authorization': 'Bearer $token'});
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -201,6 +205,7 @@ class ApiService {
         throw Exception('Failed to fetch branch');
       }
     } catch (error) {
+      print(error);
       throw Exception('Error fetching branch: $error');
     }
   }
