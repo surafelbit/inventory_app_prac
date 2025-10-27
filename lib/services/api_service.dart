@@ -37,6 +37,55 @@ class ApiService {
     }
   }
 
+  static Future<Map<String, dynamic>> addProducts(
+      String productName,
+      String partNo,
+      String barcode,
+      double purchasePrice,
+      double sellingPrice,
+      int minStock,
+      int maxStock,
+      String branchId,
+      String variant,
+      String location,
+      int quantity) async {
+    final url = Uri.parse('$baseUrl/products/register');
+    final pref = await SharedPreferences.getInstance();
+    final token = pref.getString('token');
+    try {
+      print(
+          'this niggas $productName $partNo $barcode $purchasePrice $sellingPrice $minStock $variant');
+      final response = await http.post(url,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token'
+          },
+          body: jsonEncode({
+            'name': productName,
+            'partNo': partNo.isEmpty ? null : partNo,
+            'barcode': barcode,
+            'purchasePrice': purchasePrice,
+            'sellingPrice': sellingPrice,
+            // 'catagoryId': categoreyId,
+            'minStock': minStock,
+            'maxStock': maxStock,
+            'branchId': branchId,
+            'variant': variant,
+            'location': location,
+            'quantity': quantity,
+            // 'organizationId': organizationId
+          }));
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return jsonDecode(response.body);
+      } else {
+        throw Exception('Problem Posting A Product');
+      }
+    } catch (error) {
+      print(error);
+      throw Exception('undefined problem $error');
+    }
+  }
+
   static Future<Map<String, dynamic>> loginAdmin(
       String email, String password) async {
     final url = Uri.parse('$baseUrl/auth/login');
