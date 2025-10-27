@@ -12,6 +12,17 @@ class ShopScreen extends ConsumerStatefulWidget {
 }
 
 class _ShopScreenState extends ConsumerState<ShopScreen> {
+  final TextEditingController productNumberController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController partNoController = TextEditingController();
+  final TextEditingController barCodeController = TextEditingController();
+  final TextEditingController purchasePriceController = TextEditingController();
+  final TextEditingController sellingPriceController = TextEditingController();
+  final TextEditingController minStockController = TextEditingController();
+  final TextEditingController maxStockController = TextEditingController();
+  final TextEditingController quantityController = TextEditingController();
+  final TextEditingController variantController = TextEditingController();
+
   List<dynamic> myBranches = [];
   List<dynamic> shopBranches = [];
   String? selectedOption;
@@ -376,61 +387,133 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  TextField(
-                    decoration: InputDecoration(
-                      labelText: 'enter product name',
-                      border: OutlineInputBorder(
-                          //borderRadius: BorderRadius.circular(12),
-                          ),
+                  Row(children: [
+                    Expanded(
+                      child: TextField(
+                        controller: productNumberController,
+                        decoration: InputDecoration(
+                          labelText: 'product name',
+                          border: OutlineInputBorder(
+                              //borderRadius: BorderRadius.circular(12),
+                              ),
+                        ),
+                      ),
                     ),
-                  ),
-                  TextField(
-                    decoration: InputDecoration(
-                      labelText: 'enter product name',
-                      border: OutlineInputBorder(
-                          //borderRadius: BorderRadius.circular(12),
-                          ),
+                    Expanded(
+                      child: TextField(
+                        controller: descriptionController,
+                        decoration: InputDecoration(
+                          labelText: 'Descritption',
+                          border: OutlineInputBorder(
+                              //borderRadius: BorderRadius.circular(12),
+                              ),
+                        ),
+                      ),
                     ),
-                  ),
-                  TextField(
-                    decoration: InputDecoration(
-                      labelText: 'enter product name',
-                      border: OutlineInputBorder(
-                          //borderRadius: BorderRadius.circular(12),
-                          ),
+                  ]),
+                  const SizedBox(height: 16),
+                  Row(children: [
+                    Expanded(
+                      child: TextField(
+                        controller: partNoController,
+                        decoration: InputDecoration(
+                          labelText: 'Part Number',
+                          border: OutlineInputBorder(
+                              //borderRadius: BorderRadius.circular(12),
+                              ),
+                        ),
+                      ),
                     ),
-                  ),
-                  TextField(
-                    decoration: InputDecoration(
-                      labelText: 'enter product name',
-                      border: OutlineInputBorder(
-                          //borderRadius: BorderRadius.circular(12),
-                          ),
+                    Expanded(
+                      child: TextField(
+                        controller: barCodeController,
+                        decoration: InputDecoration(
+                          labelText: 'Barcode',
+                          border: OutlineInputBorder(
+                              //borderRadius: BorderRadius.circular(12),
+                              ),
+                        ),
+                      ),
                     ),
-                  ),
-                  TextField(
-                    decoration: InputDecoration(
-                      labelText: 'enter product name',
-                      border: OutlineInputBorder(
-                          //borderRadius: BorderRadius.circular(12),
-                          ),
+                  ]),
+                  const SizedBox(height: 16),
+                  Row(children: [
+                    Expanded(
+                      child: TextField(
+                        controller: purchasePriceController,
+                        decoration: InputDecoration(
+                          labelText: 'Purchase Price',
+                          border: OutlineInputBorder(
+                              //borderRadius: BorderRadius.circular(12),
+                              ),
+                        ),
+                      ),
                     ),
-                  ),
-                  TextField(
-                    decoration: InputDecoration(
-                      labelText: 'enter product name',
-                      border: OutlineInputBorder(
-                          //borderRadius: BorderRadius.circular(12),
-                          ),
+                    Expanded(
+                      child: TextField(
+                        controller: sellingPriceController,
+                        decoration: InputDecoration(
+                          labelText: 'Selling Price',
+                          border: OutlineInputBorder(
+                              //borderRadius: BorderRadius.circular(12),
+                              ),
+                        ),
+                      ),
                     ),
-                  ),
-                  TextField(
-                    decoration: InputDecoration(
-                      labelText: 'enter product name',
-                      border: OutlineInputBorder(
-                          //borderRadius: BorderRadius.circular(12),
-                          ),
+                  ]),
+                  const SizedBox(height: 16),
+                  Row(children: [
+                    Expanded(
+                      child: TextField(
+                        controller: minStockController,
+                        decoration: InputDecoration(
+                          labelText: 'Minimum Stock',
+                          border: OutlineInputBorder(
+                              //borderRadius: BorderRadius.circular(12),
+                              ),
+                        ),
+                      ),
                     ),
+                    Expanded(
+                      child: TextField(
+                        controller: maxStockController,
+                        decoration: InputDecoration(
+                          labelText: 'Maximum Stock',
+                          border: OutlineInputBorder(
+                              //borderRadius: BorderRadius.circular(12),
+                              ),
+                        ),
+                      ),
+                    ),
+                  ]),
+                  const SizedBox(height: 16),
+                  Row(children: [
+                    Expanded(
+                      child: TextField(
+                        controller: quantityController,
+                        decoration: InputDecoration(
+                          labelText: 'Quantity',
+                          border: OutlineInputBorder(
+                              //borderRadius: BorderRadius.circular(12),
+                              ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: TextField(
+                        controller: variantController,
+                        decoration: InputDecoration(
+                          labelText: 'Variant',
+                          border: OutlineInputBorder(
+                              //borderRadius: BorderRadius.circular(12),
+                              ),
+                        ),
+                      ),
+                    ),
+                  ]),
+                  OutlinedButton(
+                    onPressed: () {},
+                    child: Text("Register"),
                   ),
                 ],
               ),
