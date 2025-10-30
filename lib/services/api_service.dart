@@ -37,6 +37,31 @@ class ApiService {
     }
   }
 
+  static Future<List<dynamic>> getProducts() async {
+    try {
+      final url = Uri.parse('$baseUrl/products/getproducts');
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      final response = await http.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json'
+        },
+      );
+      final thebody = response.body;
+      print('$thebody thisis the response man wtf');
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return jsonDecode(response.body);
+      } else {
+        throw Exception('error');
+      }
+    } catch (error) {
+      print('$error this is the error man wtf');
+      throw Exception('there is error on getting the products $error');
+    }
+  }
+
   static Future<Map<String, dynamic>> addProducts(
       String productName,
       String partNo,
@@ -53,8 +78,6 @@ class ApiService {
     final pref = await SharedPreferences.getInstance();
     final token = pref.getString('token');
     try {
-      print(
-          'this niggas $productName $partNo $barcode $purchasePrice $sellingPrice $minStock $variant');
       final response = await http.post(url,
           headers: {
             'Content-Type': 'application/json',
