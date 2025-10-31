@@ -42,6 +42,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen>
 
   List<dynamic> myBranches = [];
   List<dynamic> products = [];
+  bool productsLoading = true;
   List<dynamic> shopBranches = [];
   String? selectedOption;
   bool hasManyBranches = false;
@@ -75,8 +76,10 @@ class _ShopScreenState extends ConsumerState<ShopScreen>
         hasManyBranches = shopBranches.length > 1;
         if (shopBranches.isNotEmpty) selectedOption = shopBranches[0]['id'];
       });
+      productsLoading = false;
     } catch (error) {
       print(error);
+      productsLoading = false;
     }
   }
 
@@ -252,20 +255,94 @@ class _ShopScreenState extends ConsumerState<ShopScreen>
               ),
             ),
           ),
-          ListView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(), // ✅ disable inner scroll
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text('Item $index'),
+          Column(
+            children: products.map((product) {
+              return Card(
+                child: Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Text('Name'),
+                          Text('Selling Price'),
+                          Text('Purchase Price'),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text(product['product']['name']),
+                          Text(product['product']['sellingPrice']),
+                          Text(product['product']['purchasePrice']),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               );
-            },
+            }).toList(),
+          ),
+          SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(10),
+              child: Wrap(
+                spacing: 10,
+                runSpacing: 10,
+                children: products.map((product) {
+                  return SizedBox(
+                    width: 160,
+                    child: Card(
+                      child: Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(product['product']['name'],
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            SizedBox(height: 6),
+                            Text(
+                                'Selling: ${product['product']['sellingPrice']}'),
+                            Text(
+                                'Purchase: ${product['product']['purchasePrice']}'),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
           ),
           const SizedBox(height: 20),
           const Text(
             "Tap + to add new products",
             style: TextStyle(color: Colors.blue, fontWeight: FontWeight.w500),
           ),
+          Card(
+            elevation: 4,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+            child: Padding(
+              padding: EdgeInsets.all(10),
+              child: Row(
+                children: [],
+              ),
+            ),
+          ),
+          ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: products.length,
+              itemBuilder: (context, index) {
+                final product = products[index];
+                return Card(
+                  margin: EdgeInsets.all(10),
+                  child: ListTile(
+                    leading: Icon(Icons.shop),
+                    title: Text(product['product']['name']),
+                  ),
+                );
+              })
         ],
       ),
     );
