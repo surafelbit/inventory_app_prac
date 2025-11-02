@@ -206,7 +206,6 @@ class _ShopScreenState extends ConsumerState<ShopScreen>
                     ),
                   );
                 }).toList(),
-                //
                 onChanged: (String? newValue) {
                   setState(() {
                     gotoNext = true;
