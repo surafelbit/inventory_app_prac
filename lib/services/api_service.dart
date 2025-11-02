@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../models/user_model.dart';
+import '../../models/products_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
@@ -37,28 +38,59 @@ class ApiService {
     }
   }
 
-  static Future<List<dynamic>> getProducts() async {
+  // static Future<List<dynamic>> getProducts() async {
+  //   try {
+  //     final url = Uri.parse('$baseUrl/products/getproducts');
+  //     final prefs = await SharedPreferences.getInstance();
+  //     final token = prefs.getString('token');
+  //     final response = await http.get(
+  //       url,
+  //       headers: {
+  //         'Authorization': 'Bearer $token',
+  //         'Content-Type': 'application/json'
+  //       },
+  //     );
+  //     final thebody = response.body;
+  //     print('$thebody thisis the response man wtf');
+  //     if (response.statusCode == 200 || response.statusCode == 201) {
+  //       final List<dynamic> data = jsonDecode(response.body);
+  //       final products = data.map((e) => Product.fromJson(e)).toList();
+
+  //       return products;
+  //       return jsonDecode(response.body);
+  //     } else {
+  //       throw Exception('error');
+  //     }
+  //   } catch (error) {
+  //     print('$error this is the error man wtf');
+  //     throw Exception('there is error on getting the products $error');
+  //   }
+  // }
+  static Future<List<Product>> getProducts() async {
     try {
       final url = Uri.parse('$baseUrl/products/getproducts');
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
+
       final response = await http.get(
         url,
         headers: {
           'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
       );
-      final thebody = response.body;
-      print('$thebody thisis the response man wtf');
+
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return jsonDecode(response.body);
+        final List<dynamic> data = jsonDecode(response.body);
+
+        final products = data.map((e) => Product.fromJson(e)).toList();
+        return products;
       } else {
-        throw Exception('error');
+        throw Exception(
+            'Failed to fetch products, status code: ${response.statusCode}');
       }
     } catch (error) {
-      print('$error this is the error man wtf');
-      throw Exception('there is error on getting the products $error');
+      throw Exception('Error fetching products: $error');
     }
   }
 

@@ -1,10 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/models/products_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_app/services/api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
+import '../../../feautres/Providers/product_provider.dart';
 
 class ShopScreen extends ConsumerStatefulWidget {
   const ShopScreen({Key? key}) : super(key: key);
@@ -41,8 +43,8 @@ class _ShopScreenState extends ConsumerState<ShopScreen>
   }
 
   List<dynamic> myBranches = [];
-  List<dynamic> products = [];
-  bool productsLoading = true;
+  // List<dynamic> products = [];
+  // bool productsLoading = true;
   List<dynamic> shopBranches = [];
   String? selectedOption;
   bool hasManyBranches = false;
@@ -53,7 +55,8 @@ class _ShopScreenState extends ConsumerState<ShopScreen>
   void initState() {
     super.initState();
     getInfoAboutMe();
-    getProducts();
+    // getProducts();
+    ref.read(productProvider.notifier).initializeProducts();
   }
 
   Future<void> getInfoAboutMe() async {
@@ -76,25 +79,31 @@ class _ShopScreenState extends ConsumerState<ShopScreen>
         hasManyBranches = shopBranches.length > 1;
         if (shopBranches.isNotEmpty) selectedOption = shopBranches[0]['id'];
       });
-      productsLoading = false;
+      // productsLoading = false;
     } catch (error) {
       print(error);
-      productsLoading = false;
+      // productsLoading = false;
     }
   }
 
-  Future<void> getProducts() async {
-    try {
-      final response = await ApiService.getProducts();
-      print('this are the responses of the products $response');
-      products = response;
-    } catch (error) {
-      print(error);
-    }
-  }
+  // Future<void> getProducts() async {
+  //   try {
+  //     final response = await ApiService.getProducts();
+  //     print('this are the responses of the products $response');
+  //     products = response;
+
+  //     // ref.read(productProvider.notifier).addProducts(Product(
+  //     //     name: response[0]['quantity'], quantity: response[0]['quantity']));
+  //   } catch (error) {
+  //     print(error);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
+    final product = ref.watch(productProvider);
+    print('this is the provider products $product');
+
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: TopBarBuild(),
@@ -102,6 +111,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen>
       floatingActionButton: gotoNext
           ? FloatingActionButton.extended(
               onPressed: () {
+                print(ref.watch(productProvider));
                 setState(() {
                   gotoNext = false;
                   addingContent = true;
@@ -222,129 +232,114 @@ class _ShopScreenState extends ConsumerState<ShopScreen>
   }
 
   Widget _buildShopDashboard() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          Card(
-            elevation: 4,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  const Text(
-                    "Welcome to Your Shop",
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    shopBranches
-                        .firstWhere((e) => e['id'] == selectedOption)['name'],
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.black54,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Column(
-            children: products.map((product) {
-              return Card(
+    return Consumer(
+      builder: (context, ref, child) {
+        final asyncProducts = ref.watch(productProvider);
+
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              // Welcome Card
+              Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18)),
                 child: Padding(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(20),
                   child: Column(
                     children: [
-                      Row(
-                        children: [
-                          Text('Name'),
-                          Text('Selling Price'),
-                          Text('Purchase Price'),
-                        ],
+                      const Text(
+                        "Welcome to Your Shop",
+                        style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue),
                       ),
-                      Row(
-                        children: [
-                          Text(product['product']['name']),
-                          Text(product['product']['sellingPrice']),
-                          Text(product['product']['purchasePrice']),
-                        ],
+                      const SizedBox(height: 12),
+                      Text(
+                        shopBranches.firstWhere(
+                            (e) => e['id'] == selectedOption)['name'],
+                        style: const TextStyle(
+                            fontSize: 16, color: Colors.black54),
                       ),
                     ],
                   ),
                 ),
-              );
-            }).toList(),
-          ),
-          SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.all(10),
-              child: Wrap(
-                spacing: 10,
-                runSpacing: 10,
-                children: products.map((product) {
-                  return SizedBox(
-                    width: 160,
-                    child: Card(
-                      child: Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(product['product']['name'],
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                            SizedBox(height: 6),
-                            Text(
-                                'Selling: ${product['product']['sellingPrice']}'),
-                            Text(
-                                'Purchase: ${product['product']['purchasePrice']}'),
-                          ],
-                        ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // Products List with Async Handling
+              asyncProducts.when(
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (error, stack) => Center(
+                  child: Column(
+                    children: [
+                      const Icon(Icons.error, color: Colors.red, size: 48),
+                      const SizedBox(height: 8),
+                      Text('Failed to load products: $error'),
+                      ElevatedButton(
+                        onPressed: () => ref
+                            .read(productProvider.notifier)
+                            .initializeProducts(),
+                        child: const Text('Retry'),
                       ),
+                    ],
+                  ),
+                ),
+                data: (products) {
+                  if (products.isEmpty) {
+                    return const Center(
+                      child: Text('No products yet. Tap + to add one!'),
+                    );
+                  }
+
+                  return Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      children: products.map((product) {
+                        return SizedBox(
+                          width: 160,
+                          child: Card(
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    product.name,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text('Selling: ${product.sellingPrice ?? 0}'),
+                                  Text(
+                                      'Purchase: ${product.purchasePrice ?? 0}'),
+                                  Text('Qty: ${product.quantity}'),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
                     ),
                   );
-                }).toList(),
+                },
               ),
-            ),
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            "Tap + to add new products",
-            style: TextStyle(color: Colors.blue, fontWeight: FontWeight.w500),
-          ),
-          Card(
-            elevation: 4,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-            child: Padding(
-              padding: EdgeInsets.all(10),
-              child: Row(
-                children: [],
+
+              const SizedBox(height: 20),
+              const Text(
+                "Tap + to add new products",
+                style:
+                    TextStyle(color: Colors.blue, fontWeight: FontWeight.w500),
               ),
-            ),
+            ],
           ),
-          ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: products.length,
-              itemBuilder: (context, index) {
-                final product = products[index];
-                return Card(
-                  margin: EdgeInsets.all(10),
-                  child: ListTile(
-                    leading: Icon(Icons.shop),
-                    title: Text(product['product']['name']),
-                  ),
-                );
-              })
-        ],
-      ),
+        );
+      },
     );
   }
 
