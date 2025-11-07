@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: LoginScreen(), // start with login screen
-      // home: ProfileScreen(),
+      // home: ProfileScreen(), working on the adding a product
       //home: const WelcomeScreen(),
       // home: AdminProfileScreen(),
     );
