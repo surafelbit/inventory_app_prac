@@ -839,16 +839,7 @@ class _AddWorkerScreenState extends ConsumerState<AddWorkerScreen> {
                                           // Close the inner modal
                                           Navigator.pop(innerModalContext);
 
-                                          // Show success toast
-                                          // Fluttertoast.showToast(
-                                          //   msg:
-                                          //       "User added successfully: ${result['name']}",
-                                          //   toastLength: Toast.LENGTH_LONG,
-                                          //   gravity: ToastGravity.TOP,
-                                          //   backgroundColor: Colors.green,
-                                          //   textColor: Colors.white,
-                                          //   fontSize: 16.0,
-                                          // );
+                                          
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(
                                             SnackBar(
