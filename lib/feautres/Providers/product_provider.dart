@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/products_model.dart';
 import '../../services/api_service.dart';
-
+//
 class ProductNotifier extends StateNotifier<AsyncValue<List<Product>>> {
   ProductNotifier() : super(const AsyncLoading()) {
     initializeProducts();
